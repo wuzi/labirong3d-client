@@ -1,7 +1,5 @@
 import * as BABYLON from "babylonjs";
 
-import { SampleMaterial } from "./Materials/SampleMaterial";
-
 export class Main {
     constructor() {
       const canvas = document.getElementById("canvas") as HTMLCanvasElement;
