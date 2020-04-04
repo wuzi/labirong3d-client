@@ -1,4 +1,4 @@
-# BABYLON.js Typescript Starter
+# ArenaFy Project
 
 This Repository contains a sample BABYLON.js application.
 
