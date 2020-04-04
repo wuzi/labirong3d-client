@@ -1,0 +1,21 @@
+body, html {
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+#canvasZone {
+  width: 100vw;
+  height: 100vh;
+  display: block;
+}
+
+#canvas {
+  display: block;
+  outline: none;
+  width: 100%;
+  height: 100%;
+  touch-action: none;
+  display: block;
+  font-size: 0;
+}
