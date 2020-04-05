@@ -2,10 +2,10 @@ import { Engine, Vector3 } from '@babylonjs/core';
 import '@babylonjs/loaders';
 
 import { createScene, sceneInput } from './scene/scene';
-import { createPlayer, playerMove, playerDirection } from './player/player';
 import { sceneLight, sceneSky, sceneLightImpostor } from './scene/light';
 import { createCamera, cameraFollow } from './scene/camera';
 import { loadMap } from './scene/map';
+import Player from './player';
 
 export class Main {
     constructor() {
@@ -24,15 +24,15 @@ export class Main {
       const input = sceneInput(scene);
 
       // Player configuration
-      const player = createPlayer(scene);
+      const player = new Player(scene);
 
       // Ambience configuration
       const torch = sceneLight(scene);
       sceneSky(scene);
-      const lightImpostor = sceneLightImpostor(scene, player);
+      const lightImpostor = sceneLightImpostor(scene, player.mesh.body);
 
       // Camera configuration
-      const camera = createCamera(scene, player, canvas, cameraDistance);
+      const camera = createCamera(scene, player.mesh.body, canvas, cameraDistance);
 
       // World configuration
       loadMap(scene);
@@ -41,11 +41,14 @@ export class Main {
         playerSpeed = Vector3.Lerp(playerSpeed, playerNextspeed, 0.1);
 
         // Player speed
-        playerMove(input, playerNextspeed);
+        player.setSpeedByInput(input);
 
-        // Turn to direction
-        playerDirection(player, playerSpeed);
-        
+        // Turn direction based on speed
+        player.updateDirection();
+
+        // Move player
+        player.move();
+
         // Torch follow player
         playerNexttorch = lightImpostor.getAbsolutePosition();
         torch.position.copyFrom(playerNexttorch);
@@ -54,7 +57,7 @@ export class Main {
         torch.position.z += Math.random() * 0.125 - 0.0625;
 
         // Follow target
-        cameraFollow(camera, player, cameraDistance);
+        cameraFollow(camera, player.mesh.body, cameraDistance);
       });
 
       // Game loop
