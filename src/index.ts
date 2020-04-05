@@ -1,11 +1,11 @@
 import { Engine, Vector3 } from '@babylonjs/core';
 import '@babylonjs/loaders';
 
-import { createScene, sceneInput } from './core/Scene/Scene';
-import { createPlayer, playerMove, playerDirection } from './core/Player/Player';
-import { sceneLight, sceneSky, sceneLightImpostor } from './core/Scene/Light';
-import { createCamera, cameraFollow } from './core/Scene/Camera';
-import { loadMap } from './core/Scene/Map';
+import { createScene, sceneInput } from './scene/scene';
+import { createPlayer, playerMove, playerDirection } from './player/player';
+import { sceneLight, sceneSky, sceneLightImpostor } from './scene/light';
+import { createCamera, cameraFollow } from './scene/camera';
+import { loadMap } from './scene/map';
 
 export class Main {
     constructor() {
