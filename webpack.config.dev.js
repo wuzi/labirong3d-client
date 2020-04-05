@@ -16,6 +16,7 @@ module.exports = {
         rules: [
             { test: /\.tsx?$/, loader: "ts-loader" },
             { test: /\.glsl$/, loader: "webpack-glsl-loader" },
+            { test: /\.obj$/, loader: "webpack-obj-loader" },
         ]
     },
     plugins: [

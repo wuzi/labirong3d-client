@@ -1,15 +1,16 @@
 import { Engine, Vector3 } from '@babylonjs/core';
+import '@babylonjs/loaders';
 
-import { createScene, sceneInput } from './Core/Scene/Scene';
-import { createPlayer, playerMove, playerDirection } from './Core/Player/Player';
-import { sceneLight, sceneSky, sceneLightImpostor } from './Core/Scene/Light';
-import { createCamera, cameraFollow } from './Core/Scene/Camera';
-import { createMap, setBounds } from './Core/Scene/Map';
+import { createScene, sceneInput } from './core/Scene/Scene';
+import { createPlayer, playerMove, playerDirection } from './core/Player/Player';
+import { sceneLight, sceneSky, sceneLightImpostor } from './core/Scene/Light';
+import { createCamera, cameraFollow } from './core/Scene/Camera';
+import { loadMap } from './core/Scene/Map';
 
 export class Main {
     constructor() {
       // Core configuration
-      const canvas = document.getElementById("canvas") as HTMLCanvasElement;
+      const canvas = document.getElementById('canvas') as HTMLCanvasElement;
       const engine = new Engine(canvas, true);
       const cameraDistance = 25;
 
@@ -34,7 +35,7 @@ export class Main {
       const camera = createCamera(scene, player, canvas, cameraDistance);
 
       // World configuration
-      createMap(scene);
+      loadMap(scene);
 
       scene.registerBeforeRender(function () {
         playerSpeed = Vector3.Lerp(playerSpeed, playerNextspeed, 0.1);
@@ -44,9 +45,6 @@ export class Main {
 
         // Turn to direction
         playerDirection(player, playerSpeed);
-
-        // Set Map Bounds
-        setBounds(player);
         
         // Torch follow player
         playerNexttorch = lightImpostor.getAbsolutePosition();
