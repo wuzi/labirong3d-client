@@ -5,6 +5,7 @@ export default class Player {
   public readonly mesh: PlayerMesh;
 
   private readonly velocity = 0.5;
+
   private speed: Vector3;
 
   constructor(scene: Scene) {
@@ -12,36 +13,36 @@ export default class Player {
     this.speed = new Vector3(0, 0, 0);
   }
 
-  public setSpeedByInput(input: any) {
+  public setSpeedByInput(input: Input): void {
     this.speed.x = 0.0;
     this.speed.z = 0.00001;
 
-    if (input['w'] || input['ArrowUp']) {
+    if (input.w || input.ArrowUp) {
       this.speed.x = -this.velocity;
       this.speed.z = this.velocity;
     }
 
-    if (input['a'] || input['ArrowLeft']) {
+    if (input.a || input.ArrowLeft) {
       this.speed.x = -this.velocity;
       this.speed.z = -this.velocity;
     }
 
-    if (input['s'] || input['ArrowDown']) {
+    if (input.s || input.ArrowDown) {
       this.speed.x = this.velocity;
       this.speed.z = -this.velocity;
     }
 
-    if (input['d'] || input['ArrowRight']) {
+    if (input.d || input.ArrowRight) {
       this.speed.x = this.velocity;
       this.speed.z = this.velocity;
     }
   }
 
-  public move() {
+  public move(): void {
     this.mesh.body.moveWithCollisions(this.speed);
   }
 
-  public updateDirection() {
+  public updateDirection(): void {
     if (this.speed.length() <= 0.01) {
       return;
     }
@@ -83,4 +84,4 @@ export default class Player {
       this.mesh.body.rotation.y += Math.PI * 2;
     }
   }
-};
+}

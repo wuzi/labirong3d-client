@@ -2,7 +2,9 @@ import { Color3, Scene, StandardMaterial } from '@babylonjs/core';
 
 export default class PlayerMaterial {
   public readonly body: StandardMaterial;
+
   public readonly sclera: StandardMaterial;
+
   public readonly pupil: StandardMaterial;
 
   constructor(scene: Scene) {

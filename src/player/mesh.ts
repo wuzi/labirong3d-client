@@ -3,9 +3,13 @@ import PlayerMaterial from './material';
 
 export default class PlayerMesh {
   public readonly body: Mesh;
+
   public readonly leftSclera: Mesh;
+
   public readonly rightSclera: Mesh;
+
   public readonly leftPupil: Mesh;
+
   public readonly rightPupil: Mesh;
 
   constructor(scene: Scene) {
@@ -24,21 +28,21 @@ export default class PlayerMesh {
     this.leftSclera.position.x = -0.3;
     this.leftSclera.parent = this.body;
 
-    this.rightSclera = Mesh.CreateSphere("eye2", 8, 0.5, scene);
+    this.rightSclera = Mesh.CreateSphere('eye2', 8, 0.5, scene);
     this.rightSclera.material = material.sclera;
     this.rightSclera.position.y = 0.5;
     this.rightSclera.position.z = 0.5;
     this.rightSclera.position.x = 0.3;
     this.rightSclera.parent = this.body;
 
-    this.leftPupil = Mesh.CreateSphere("eye1b", 8, 0.25, scene);
+    this.leftPupil = Mesh.CreateSphere('eye1b', 8, 0.25, scene);
     this.leftPupil.material = material.pupil;
     this.leftPupil.position.y = 0.5;
     this.leftPupil.position.z = 0.7;
     this.leftPupil.position.x = -0.3;
     this.leftPupil.parent = this.body;
 
-    this.rightPupil = Mesh.CreateSphere("eye2b", 8, 0.25, scene);
+    this.rightPupil = Mesh.CreateSphere('eye2b', 8, 0.25, scene);
     this.rightPupil.material = material.pupil;
     this.rightPupil.position.y = 0.5;
     this.rightPupil.position.z = 0.7;

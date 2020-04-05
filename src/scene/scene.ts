@@ -10,7 +10,8 @@ export const createScene = (engine: Engine): Scene => {
   return scene;
 };
 
-export const sceneInput = (scene: Scene): any => {
+export const sceneInput = (scene: Scene): Input => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const inputMap: any = {};
   const sceneCopy = scene;
 
