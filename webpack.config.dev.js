@@ -23,9 +23,6 @@ module.exports = {
             { from: "public" },
         ]),
     ],
-    externals: {
-        "babylonjs": "BABYLON",
-    },
     devServer: {
         contentBase: path.resolve(__dirname, "./dist"),
         compress: true,
