@@ -11,7 +11,7 @@ export const createScene = (engine: Engine): Scene => {
 };
 
 export const sceneInput = (scene: Scene): any => {
-  const inputMap = {};
+  const inputMap: any = {};
   const sceneCopy = scene;
 
   sceneCopy.actionManager = new ActionManager(sceneCopy);
