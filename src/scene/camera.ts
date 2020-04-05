@@ -1,10 +1,15 @@
-import { FollowCamera, Vector3, Mesh, Scene } from '@babylonjs/core';
+import {
+  FollowCamera,
+  Vector3,
+  Mesh,
+  Scene,
+} from '@babylonjs/core';
 
 export const createCamera = (
-  scene: Scene, target: Mesh, canvas: HTMLCanvasElement, cameraDistance: number
-) => {
+  scene: Scene, target: Mesh, canvas: HTMLCanvasElement, cameraDistance: number,
+): FollowCamera => {
   const camera = new FollowCamera(
-    "FollowCam",
+    'FollowCam',
     new Vector3(target.position.x, target.position.y + 5, target.position.z - 45),
     scene,
   );
@@ -17,10 +22,15 @@ export const createCamera = (
   camera.lockedTarget = target; // target any mesh or object with a "position" Vector3
 
   return camera;
-}
+};
 
-export const cameraFollow = (camera: FollowCamera, target: Mesh, cameraDistance: number) => {
-  camera.position.x = target.position.x + cameraDistance;
-  camera.position.y = target.position.y + cameraDistance;
-  camera.position.z = target.position.z - cameraDistance;
-}
+export const cameraFollow = (
+  camera: FollowCamera, target: Mesh, cameraDistance: number,
+): FollowCamera => {
+  const newCameraPosition = camera;
+  newCameraPosition.position.x = target.position.x + cameraDistance;
+  newCameraPosition.position.y = target.position.y + cameraDistance;
+  newCameraPosition.position.z = target.position.z - cameraDistance;
+
+  return newCameraPosition;
+};

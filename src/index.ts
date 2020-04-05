@@ -4,67 +4,61 @@ import '@babylonjs/loaders';
 import { createScene, sceneInput } from './scene/scene';
 import { sceneLight, sceneSky, sceneLightImpostor } from './scene/light';
 import { createCamera, cameraFollow } from './scene/camera';
-import { loadMap } from './scene/map';
+import loadMap from './scene/map';
 import Player from './player';
 
-export class Main {
-    constructor() {
-      // Core configuration
-      const canvas = document.getElementById('canvas') as HTMLCanvasElement;
-      const engine = new Engine(canvas, true);
-      const cameraDistance = 25;
+const Main = (): void => {
+  // Core configuration
+  const canvas = document.getElementById('canvas') as HTMLCanvasElement;
+  const engine = new Engine(canvas, true);
+  const cameraDistance = 25;
 
-      // Player Move configuration
-      let playerSpeed = new Vector3(0, 0, 0.08);
-      let playerNextspeed = new Vector3(0, 0, 0);
-      let playerNexttorch = new Vector3(0, 0, 0);
-      
-      // Scene configuration
-      const scene = createScene(engine);
-      const input = sceneInput(scene);
+  // Player Move configuration
+  let playerNexttorch = new Vector3(0, 0, 0);
 
-      // Player configuration
-      const player = new Player(scene);
+  // Scene configuration
+  const scene = createScene(engine);
+  const input = sceneInput(scene);
 
-      // Ambience configuration
-      const torch = sceneLight(scene);
-      sceneSky(scene);
-      const lightImpostor = sceneLightImpostor(scene, player.mesh.body);
+  // Player configuration
+  const player = new Player(scene);
 
-      // Camera configuration
-      const camera = createCamera(scene, player.mesh.body, canvas, cameraDistance);
+  // Ambience configuration
+  const torch = sceneLight(scene);
+  sceneSky(scene);
+  const lightImpostor = sceneLightImpostor(scene, player.mesh.body);
 
-      // World configuration
-      loadMap(scene);
+  // Camera configuration
+  const camera = createCamera(scene, player.mesh.body, canvas, cameraDistance);
 
-      scene.registerBeforeRender(function () {
-        playerSpeed = Vector3.Lerp(playerSpeed, playerNextspeed, 0.1);
+  // World configuration
+  loadMap(scene);
 
-        // Player speed
-        player.setSpeedByInput(input);
+  scene.registerBeforeRender(() => {
+    // Player speed
+    player.setSpeedByInput(input);
 
-        // Turn direction based on speed
-        player.updateDirection();
+    // Turn direction based on speed
+    player.updateDirection();
 
-        // Move player
-        player.move();
+    // Move player
+    player.move();
 
-        // Torch follow player
-        playerNexttorch = lightImpostor.getAbsolutePosition();
-        torch.position.copyFrom(playerNexttorch);
-        torch.intensity = 1;
-        torch.position.x += Math.random() * 0.125 - 0.0625;
-        torch.position.z += Math.random() * 0.125 - 0.0625;
+    // Torch follow player
+    playerNexttorch = lightImpostor.getAbsolutePosition();
+    torch.position.copyFrom(playerNexttorch);
+    torch.intensity = 1;
+    torch.position.x += Math.random() * 0.125 - 0.0625;
+    torch.position.z += Math.random() * 0.125 - 0.0625;
 
-        // Follow target
-        cameraFollow(camera, player.mesh.body, cameraDistance);
-      });
+    // Follow target
+    cameraFollow(camera, player.mesh.body, cameraDistance);
+  });
 
-      // Game loop
-      engine.runRenderLoop(() => {
-          scene.render();
-      });
-    }
-}
+  // Game loop
+  engine.runRenderLoop(() => {
+    scene.render();
+  });
+};
 
-new Main();
+export default Main();
