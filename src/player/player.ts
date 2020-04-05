@@ -52,7 +52,7 @@ export const createPlayer = (scene: Scene) => {
   return player;
 }
 
-export const playerMove = (input: Object, playerNextspeed: Vector3) => {
+export const playerMove = (input: any, playerNextspeed: Vector3) => {
   var v = 0.5;
   playerNextspeed.x = 0.0;
   playerNextspeed.z = 0.00001;

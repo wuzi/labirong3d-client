@@ -9,7 +9,7 @@ export const createScene = (engine: Engine) => {
 }
 
 export const sceneInput = (scene: Scene) => {
-  const inputMap = {};
+  const inputMap: any = {};
   scene.actionManager = new ActionManager(scene);
   scene.actionManager.registerAction(new ExecuteCodeAction(ActionManager.OnKeyDownTrigger, function (evt) {								
       inputMap[evt.sourceEvent.key] = evt.sourceEvent.type == "keydown";
