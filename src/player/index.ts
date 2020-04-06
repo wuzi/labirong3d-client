@@ -45,7 +45,7 @@ export default class Player {
   }
 
   public updateDirection(): void {
-    if (this.speed.length() <= 0.01 || !this.mesh.body) {
+    if (this.speed.length() <= 0.01) {
       return;
     }
 
