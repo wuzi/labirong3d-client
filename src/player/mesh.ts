@@ -14,7 +14,7 @@ export default class PlayerMesh {
     this.skeleton.animationPropertiesOverride.blendingSpeed = 0.05;
     this.skeleton.animationPropertiesOverride.loopMode = 1;
 
-    const idleRange = this.skeleton.getAnimationRange('Run');
+    const idleRange = this.skeleton.getAnimationRange('Idle');
     if (idleRange) scene.beginAnimation(this.skeleton, idleRange.from, idleRange.to, true);
   }
 }
