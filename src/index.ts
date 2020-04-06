@@ -1,4 +1,7 @@
-import { Engine, Vector3 } from '@babylonjs/core';
+import {
+  Engine, Vector3, SceneLoader,
+} from '@babylonjs/core';
+
 import '@babylonjs/loaders';
 
 import { createScene, sceneInput } from './scene/scene';
@@ -7,11 +10,11 @@ import { createCamera, cameraFollow } from './scene/camera';
 import loadMap from './scene/map';
 import Player from './player';
 
-const Main = (): void => {
+const Main = async (): Promise<void> => {
   // Core configuration
   const canvas = document.getElementById('canvas') as HTMLCanvasElement;
   const engine = new Engine(canvas, true);
-  const cameraDistance = 25;
+  const cameraDistance = 5;
 
   // Player Move configuration
   let playerNexttorch = new Vector3(0, 0, 0);
@@ -21,7 +24,8 @@ const Main = (): void => {
   const input = sceneInput(scene);
 
   // Player configuration
-  const player = new Player(scene);
+  const { meshes, skeletons } = await SceneLoader.ImportMeshAsync('', 'assets/', 'hunter.babylon', scene);
+  const player = new Player(scene, meshes, skeletons);
 
   // Ambience configuration
   const torch = sceneLight(scene);
