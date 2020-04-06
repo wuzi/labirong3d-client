@@ -1,4 +1,6 @@
-import { Scene, Vector3, Axis } from '@babylonjs/core';
+import {
+  Scene, Vector3, Axis, AbstractMesh, Skeleton,
+} from '@babylonjs/core';
 import PlayerMesh from './mesh';
 
 export default class Player {
@@ -8,8 +10,8 @@ export default class Player {
 
   private speed: Vector3;
 
-  constructor(scene: Scene) {
-    this.mesh = new PlayerMesh(scene);
+  constructor(scene: Scene, meshes: AbstractMesh[], skeletons: Skeleton[]) {
+    this.mesh = new PlayerMesh(scene, meshes[0], skeletons[0]);
     this.speed = new Vector3(0, 0, 0);
   }
 
