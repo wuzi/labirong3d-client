@@ -41,7 +41,6 @@ export default class Player {
   }
 
   public move(): void {
-    if (!this.mesh.body) return;
     this.mesh.body.moveWithCollisions(this.speed);
   }
 
