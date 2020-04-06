@@ -14,7 +14,7 @@ const Main = async (): Promise<void> => {
   // Core configuration
   const canvas = document.getElementById('canvas') as HTMLCanvasElement;
   const engine = new Engine(canvas, true);
-  const cameraDistance = 5;
+  const cameraDistance = 25;
 
   // Player Move configuration
   let playerNexttorch = new Vector3(0, 0, 0);
