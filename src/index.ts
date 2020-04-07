@@ -1,42 +1,41 @@
 import '@babylonjs/loaders';
-import { Engine, SceneLoader, Vector3 } from '@babylonjs/core';
+import { SceneLoader, Vector3 } from '@babylonjs/core';
 
 import { cameraFollow, CAMERA_DISTANCE, createCamera } from './scene/camera';
 import loadMap from './scene/map';
-import { createScene, sceneInput } from './scene/scene';
+import { sceneInput } from './scene/scene';
 import Torch from './scene/torch';
 import Player from './player';
 import Sunlight from './scene/sunlight';
+import Game from './game';
 
 const Main = async (): Promise<void> => {
-  // Core configuration
-  const canvas = document.getElementById('canvas') as HTMLCanvasElement;
-  const engine = new Engine(canvas, true);
+  const game = new Game();
+  game.scene.gravity = new Vector3(0, -9.81, 0);
+  game.scene.debugLayer.show();
 
   // Scene configuration
-  const scene = createScene(engine);
-  const input = sceneInput(scene);
+  const input = sceneInput(game.scene);
 
   // Player configuration
-  const { meshes, skeletons } = await SceneLoader.ImportMeshAsync('', 'assets/', 'hunter.babylon', scene);
-  const player = new Player(scene, meshes, skeletons);
+  const { meshes, skeletons } = await SceneLoader.ImportMeshAsync('', 'assets/', 'hunter.babylon', game.scene);
+  const player = new Player(game.scene, meshes, skeletons);
   player.updateDirection();
 
   // Ambience configuration
-  const torch = new Torch(scene);
+  const torch = new Torch(game.scene);
   torch.intensity = 1;
 
-  const sunlight = new Sunlight(scene);
+  const sunlight = new Sunlight(game.scene);
   sunlight.intensity = 0.5;
 
   // Camera configuration
-  const camera = createCamera(scene, player.mesh.body, canvas, CAMERA_DISTANCE);
+  const camera = createCamera(game.scene, player.mesh.body, game.canvas, CAMERA_DISTANCE);
 
   // World configuration
-  scene.gravity = new Vector3(0, -9.81, 0);
-  loadMap(scene);
+  loadMap(game.scene);
 
-  scene.registerBeforeRender(() => {
+  game.scene.registerBeforeRender(() => {
     // Player speed
     player.setGravity();
     player.setSpeedByInput(input);
@@ -52,8 +51,8 @@ const Main = async (): Promise<void> => {
   });
 
   // Game loop
-  engine.runRenderLoop(() => {
-    scene.render();
+  game.engine.runRenderLoop(() => {
+    game.scene.render();
   });
 };
 
