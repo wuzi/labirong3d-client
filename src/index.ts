@@ -3,7 +3,6 @@ import { SceneLoader, Vector3 } from '@babylonjs/core';
 
 import { cameraFollow, CAMERA_DISTANCE, createCamera } from './scene/camera';
 import loadMap from './scene/map';
-import { sceneInput } from './scene/scene';
 import Torch from './scene/torch';
 import Player from './player';
 import Sunlight from './scene/sunlight';
@@ -14,13 +13,11 @@ const Main = async (): Promise<void> => {
   game.scene.gravity = new Vector3(0, -9.81, 0);
   game.scene.debugLayer.show();
 
-  // Scene configuration
-  const input = sceneInput(game.scene);
-
   // Player configuration
   const { meshes, skeletons } = await SceneLoader.ImportMeshAsync('', 'assets/', 'hunter.babylon', game.scene);
   const player = new Player(game.scene, meshes, skeletons);
-  player.updateDirection();
+  player.lookAtCursor();
+  player.readControls();
 
   // Ambience configuration
   const torch = new Torch(game.scene);
@@ -36,10 +33,6 @@ const Main = async (): Promise<void> => {
   loadMap(game.scene);
 
   game.scene.registerBeforeRender(() => {
-    // Player speed
-    player.setGravity();
-    player.setSpeedByInput(input);
-
     // Move player
     player.move();
 
