@@ -1,12 +1,9 @@
-import {
-  Engine, Vector3, SceneLoader,
-} from '@babylonjs/core';
-
 import '@babylonjs/loaders';
+import { Engine, Vector3, SceneLoader } from '@babylonjs/core';
 
 import { createScene, sceneInput } from './scene/scene';
 import { sceneLight, sceneSky, sceneLightImpostor } from './scene/light';
-import { createCamera, cameraFollow } from './scene/camera';
+import { createCamera, cameraFollow, CAMERA_DISTANCE } from './scene/camera';
 import loadMap from './scene/map';
 import Player from './player';
 
@@ -14,10 +11,6 @@ const Main = async (): Promise<void> => {
   // Core configuration
   const canvas = document.getElementById('canvas') as HTMLCanvasElement;
   const engine = new Engine(canvas, true);
-  const cameraDistance = 25;
-
-  // Player Move configuration
-  let playerNexttorch = new Vector3(0, 0, 0);
 
   // Scene configuration
   const scene = createScene(engine);
@@ -28,12 +21,14 @@ const Main = async (): Promise<void> => {
   const player = new Player(scene, meshes, skeletons);
 
   // Ambience configuration
+  let playerNexttorch = new Vector3(0, 0, 0);
   const torch = sceneLight(scene);
+
   sceneSky(scene);
   const lightImpostor = sceneLightImpostor(scene, player.mesh.body);
 
   // Camera configuration
-  const camera = createCamera(scene, player.mesh.body, canvas, cameraDistance);
+  const camera = createCamera(scene, player.mesh.body, canvas, CAMERA_DISTANCE);
 
   // World configuration
   loadMap(scene);
@@ -56,7 +51,7 @@ const Main = async (): Promise<void> => {
     torch.position.z += Math.random() * 0.125 - 0.0625;
 
     // Follow target
-    cameraFollow(camera, player.mesh.body, cameraDistance);
+    cameraFollow(camera, player.mesh.body, CAMERA_DISTANCE);
   });
 
   // Game loop

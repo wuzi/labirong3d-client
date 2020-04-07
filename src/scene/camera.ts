@@ -5,6 +5,8 @@ import {
   Scene,
 } from '@babylonjs/core';
 
+export const CAMERA_DISTANCE = 25;
+
 export const createCamera = (
   scene: Scene, target: Mesh, canvas: HTMLCanvasElement, cameraDistance: number,
 ): FollowCamera => {
