@@ -40,6 +40,14 @@ export default class Player {
     this.mesh.body.position = position;
   }
 
+  get rotation(): Vector3 {
+    return this.mesh.body.rotation;
+  }
+
+  set rotation(rotation: Vector3) {
+    this.mesh.body.rotation = rotation;
+  }
+
   public move(): void {
     const speed = this.speed.add(this.gravity);
     this.mesh.body.moveWithCollisions(speed);

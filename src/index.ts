@@ -37,7 +37,7 @@ const Main = async (): Promise<void> => {
     await network.connect();
 
     player.id = await network.getClientId();
-    network.listen(game);
+    network.listen(game, player);
   } catch (err) {
     // eslint-disable-next-line no-alert
     alert('Failed to connect to server!');
