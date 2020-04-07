@@ -6,7 +6,7 @@ import PlayerMesh from './mesh';
 export default class Player {
   public readonly mesh: PlayerMesh;
 
-  private readonly velocity = 0.07;
+  private readonly velocity = 0.1;
 
   private readonly speed: Vector3;
 
@@ -85,23 +85,23 @@ export default class Player {
     this.speed.z = 0.00001;
 
     if (this.keyPressed.w || this.keyPressed.ArrowUp) {
-      this.speed.x = -this.velocity;
-      this.speed.z = this.velocity;
+      this.speed.x += -this.velocity;
+      this.speed.z += this.velocity;
     }
 
     if (this.keyPressed.a || this.keyPressed.ArrowLeft) {
-      this.speed.x = -this.velocity;
-      this.speed.z = -this.velocity;
+      this.speed.x += -this.velocity;
+      this.speed.z += -this.velocity;
     }
 
     if (this.keyPressed.s || this.keyPressed.ArrowDown) {
-      this.speed.x = this.velocity;
-      this.speed.z = -this.velocity;
+      this.speed.x += this.velocity;
+      this.speed.z += -this.velocity;
     }
 
     if (this.keyPressed.d || this.keyPressed.ArrowRight) {
-      this.speed.x = this.velocity;
-      this.speed.z = this.velocity;
+      this.speed.x += this.velocity;
+      this.speed.z += this.velocity;
     }
   }
 }
