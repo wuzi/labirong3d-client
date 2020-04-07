@@ -17,4 +17,9 @@ export default class PlayerMesh {
     const idleRange = this.skeleton.getAnimationRange('Idle');
     if (idleRange) scene.beginAnimation(this.skeleton, idleRange.from, idleRange.to, true);
   }
+
+  public dispose(): void {
+    this.body.dispose();
+    this.skeleton.dispose();
+  }
 }

@@ -35,7 +35,9 @@ const Main = async (): Promise<void> => {
   try {
     const network = new Network('ws://localhost:8080/ws');
     await network.connect();
+
     player.id = await network.getClientId();
+    network.listen(game);
   } catch (err) {
     // eslint-disable-next-line no-alert
     alert('Failed to connect to server!');

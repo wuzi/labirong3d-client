@@ -25,7 +25,6 @@ export default class Player {
     this.mesh.body.position.x = 12;
     this.mesh.body.position.y = 10;
 
-    this.scene = scene;
     this.speed = new Vector3(0, 0, 0);
     this.gravity = new Vector3(0, -0.1, 0);
     this.direction = new Vector3();
@@ -47,10 +46,9 @@ export default class Player {
   }
 
   public readControls(): void {
-    const sceneCopy = this.scene;
-    sceneCopy.actionManager = new ActionManager(sceneCopy);
+    this.scene.actionManager = new ActionManager(this.scene);
 
-    sceneCopy.actionManager.registerAction(
+    this.scene.actionManager.registerAction(
       new ExecuteCodeAction(ActionManager.OnKeyDownTrigger, ((evt) => {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         (this.keyPressed as any)[evt.sourceEvent.key] = evt.sourceEvent.type === 'keydown';
@@ -58,7 +56,7 @@ export default class Player {
       })),
     );
 
-    sceneCopy.actionManager.registerAction(
+    this.scene.actionManager.registerAction(
       new ExecuteCodeAction(ActionManager.OnKeyUpTrigger, ((evt) => {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         (this.keyPressed as any)[evt.sourceEvent.key] = evt.sourceEvent.type === 'keydown';
