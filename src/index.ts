@@ -20,7 +20,7 @@ const Main = async (): Promise<void> => {
   player.lookAtCursor();
   player.readControls();
 
-  // Ambience configuration
+  // Lighting configuration
   const torch = new Torch(game.scene);
   torch.intensity = 1;
 
@@ -31,13 +31,8 @@ const Main = async (): Promise<void> => {
   const camera = createCamera(game.scene, player.mesh.body, game.canvas, CAMERA_DISTANCE);
 
   game.scene.registerBeforeRender(() => {
-    // Move player
     player.move();
-
-    // Torch follow player
     torch.copyPositionFrom(player.position);
-
-    // Follow target
     cameraFollow(camera, player.mesh.body, CAMERA_DISTANCE);
   });
 
