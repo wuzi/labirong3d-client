@@ -29,6 +29,14 @@ export default class Player {
     this.keyPressed = {};
   }
 
+  get position(): Vector3 {
+    return this.mesh.body.position;
+  }
+
+  set position(position: Vector3) {
+    this.mesh.body.position = position;
+  }
+
   public move(): void {
     const speed = this.speed.add(this.gravity);
     this.mesh.body.moveWithCollisions(speed);

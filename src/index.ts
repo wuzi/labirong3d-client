@@ -9,6 +9,7 @@ import Sunlight from './scene/sunlight';
 import Game from './game';
 
 const Main = async (): Promise<void> => {
+  // Create game
   const game = new Game();
   game.scene.gravity = new Vector3(0, -9.81, 0);
   game.scene.debugLayer.show();
@@ -37,7 +38,7 @@ const Main = async (): Promise<void> => {
     player.move();
 
     // Torch follow player
-    torch.copyPositionFrom(player.mesh.body.position);
+    torch.copyPositionFrom(player.position);
 
     // Follow target
     cameraFollow(camera, player.mesh.body, CAMERA_DISTANCE);
