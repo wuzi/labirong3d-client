@@ -1,11 +1,12 @@
 import '@babylonjs/loaders';
-import { Engine, Vector3, SceneLoader } from '@babylonjs/core';
+import { Engine, SceneLoader, Vector3 } from '@babylonjs/core';
 
-import { createScene, sceneInput } from './scene/scene';
-import { sceneLight, sceneSky, sceneLightImpostor } from './scene/light';
-import { createCamera, cameraFollow, CAMERA_DISTANCE } from './scene/camera';
+import { cameraFollow, CAMERA_DISTANCE, createCamera } from './scene/camera';
 import loadMap from './scene/map';
+import { createScene, sceneInput } from './scene/scene';
+import Torch from './scene/torch';
 import Player from './player';
+import Sunlight from './scene/sunlight';
 
 const Main = async (): Promise<void> => {
   // Core configuration
@@ -22,11 +23,9 @@ const Main = async (): Promise<void> => {
   player.updateDirection();
 
   // Ambience configuration
-  let playerNexttorch = new Vector3(0, 0, 0);
-  const torch = sceneLight(scene);
-
-  sceneSky(scene);
-  const lightImpostor = sceneLightImpostor(scene, player.mesh.body);
+  const torch = new Torch(scene);
+  const sunlight = new Sunlight(scene);
+  sunlight.intensity = 0.5;
 
   // Camera configuration
   const camera = createCamera(scene, player.mesh.body, canvas, CAMERA_DISTANCE);
@@ -44,11 +43,7 @@ const Main = async (): Promise<void> => {
     player.move();
 
     // Torch follow player
-    playerNexttorch = lightImpostor.getAbsolutePosition();
-    torch.position.copyFrom(playerNexttorch);
-    torch.intensity = 1;
-    torch.position.x += Math.random() * 0.125 - 0.0625;
-    torch.position.z += Math.random() * 0.125 - 0.0625;
+    torch.copyPositionFrom(player.mesh.body.position);
 
     // Follow target
     cameraFollow(camera, player.mesh.body, CAMERA_DISTANCE);
