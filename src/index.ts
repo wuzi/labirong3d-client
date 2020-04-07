@@ -36,10 +36,12 @@ const Main = async (): Promise<void> => {
   const camera = createCamera(scene, player.mesh.body, canvas, cameraDistance);
 
   // World configuration
+  scene.gravity = new Vector3(0, -9.81, 0);
   loadMap(scene);
 
   scene.registerBeforeRender(() => {
     // Player speed
+    player.setGravity();
     player.setSpeedByInput(input);
 
     // Turn direction based on speed

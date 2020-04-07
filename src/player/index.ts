@@ -6,13 +6,19 @@ import PlayerMesh from './mesh';
 export default class Player {
   public readonly mesh: PlayerMesh;
 
-  private readonly velocity = 0.5;
+  private readonly velocity = 0.07;
 
   private speed: Vector3;
 
+  private readonly gravity: Vector3;
+
   constructor(scene: Scene, meshes: AbstractMesh[], skeletons: Skeleton[]) {
     this.mesh = new PlayerMesh(scene, meshes[0], skeletons[0]);
+    this.mesh.body.position.x = 12;
+    this.mesh.body.position.y = 10;
+
     this.speed = new Vector3(0, 0, 0);
+    this.gravity = new Vector3(0, -0.3, 0);
   }
 
   public setSpeedByInput(input: Input): void {
@@ -38,6 +44,10 @@ export default class Player {
       this.speed.x = this.velocity;
       this.speed.z = this.velocity;
     }
+  }
+
+  public setGravity(): void {
+    this.mesh.body.moveWithCollisions(this.gravity);
   }
 
   public move(): void {
