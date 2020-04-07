@@ -6,6 +6,7 @@ export const createScene = (engine: Engine): Scene => {
   const scene = new Scene(engine);
   scene.gravity = new Vector3(0, -0.9, 0);
   scene.collisionsEnabled = true;
+  scene.debugLayer.show();
 
   return scene;
 };
