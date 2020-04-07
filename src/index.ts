@@ -33,11 +33,10 @@ const Main = async (): Promise<void> => {
 
   // Connect to server
   try {
-    const network = new Network('ws://localhost:8080/ws');
+    const network = new Network('ws://localhost:8080/ws', game, player);
     await network.connect();
-
-    player.id = await network.getClientId();
-    network.listen(game, player);
+    await network.syncPlayers();
+    network.listen();
   } catch (err) {
     // eslint-disable-next-line no-alert
     alert('Failed to connect to server!');

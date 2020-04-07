@@ -5,10 +5,16 @@ import Game from '../game';
 export default class Network {
   private connection: WebSocket | undefined;
 
+  private game: Game | undefined;
+
+  private localPlayer: Player | undefined;
+
   public players: Player[];
 
-  constructor(private url: string) {
+  constructor(private url: string, game: Game, localPlayer: Player) {
     this.players = [];
+    this.game = game;
+    this.localPlayer = localPlayer;
   }
 
   public connect(): Promise<void> {
@@ -25,19 +31,28 @@ export default class Network {
     }));
   }
 
-  public getClientId(): Promise<number> {
+  public syncPlayers(): Promise<void> {
     return new Promise(((resolve, reject) => {
       if (!this.connection) {
         throw new Error('not connected');
       }
 
-      const eventReq = { name: 'getClientId' };
+      const eventReq = { name: 'getServerInfo' };
       this.connection.send(JSON.stringify(eventReq));
 
       this.connection.onmessage = (e: MessageEvent): void => {
         const eventRes = JSON.parse(e.data);
-        if (eventRes.name === 'getClientId') {
-          resolve(eventRes.data.id);
+        if (eventRes.name === 'getServerInfo') {
+          if (this.localPlayer) {
+            this.localPlayer.id = eventRes.data.id;
+          }
+
+          eventRes.data.players.forEach((p: { id: number }) => {
+            if (!this.localPlayer || p.id === this.localPlayer.id) return;
+            this.addPlayer(p.id);
+          });
+
+          resolve(undefined);
         }
       };
 
@@ -47,15 +62,19 @@ export default class Network {
     }));
   }
 
-  private async addPlayer(game: Game, id: number): Promise<void> {
-    const { meshes, skeletons } = await BABYLON.SceneLoader.ImportMeshAsync('', 'assets/', 'hunter.babylon', game.scene);
-    const player = new Player(game.scene, meshes, skeletons);
+  private async addPlayer(id: number): Promise<void> {
+    if (!this.game) {
+      throw new Error('game is not set in the network');
+    }
+
+    const { meshes, skeletons } = await BABYLON.SceneLoader.ImportMeshAsync('', 'assets/', 'hunter.babylon', this.game.scene);
+    const player = new Player(this.game.scene, meshes, skeletons);
 
     player.id = id;
     this.players.push(player);
   }
 
-  public listen(game: Game, localPlayer: Player): void {
+  public listen(): void {
     if (!this.connection) {
       throw new Error('not connected');
     }
@@ -63,6 +82,10 @@ export default class Network {
     this.connection.onmessage = async (e: MessageEvent): Promise<void> => {
       if (!this.connection) {
         throw new Error('not connected');
+      }
+
+      if (!this.localPlayer) {
+        throw new Error('local player not set in network');
       }
 
       const eventRes: {
@@ -73,7 +96,11 @@ export default class Network {
       if (eventRes.name === 'update') {
         // Update connected players position
         (eventRes.data as EventResponsePlayer[]).forEach((p) => {
-          if (p.id === localPlayer.id) return;
+          if (!this.localPlayer) {
+            throw new Error('local player not set in network');
+          }
+
+          if (p.id === this.localPlayer.id) return;
 
           const player = this.players.find((pl) => pl.id === p.id);
           if (player) {
@@ -92,20 +119,20 @@ export default class Network {
           name: 'movePlayer',
           data: {
             position: {
-              x: localPlayer.position.x,
-              y: localPlayer.position.y,
-              z: localPlayer.position.z,
+              x: this.localPlayer.position.x,
+              y: this.localPlayer.position.y,
+              z: this.localPlayer.position.z,
             },
             rotation: {
-              x: localPlayer.rotation.x,
-              y: localPlayer.rotation.y,
-              z: localPlayer.rotation.z,
+              x: this.localPlayer.rotation.x,
+              y: this.localPlayer.rotation.y,
+              z: this.localPlayer.rotation.z,
             },
           },
         };
         this.connection.send(JSON.stringify(eventReq));
       } else if (eventRes.name === 'playerJoin') {
-        this.addPlayer(game, (eventRes.data as EventResponsePlayer).id);
+        this.addPlayer((eventRes.data as EventResponsePlayer).id);
       } else if (eventRes.name === 'playerQuit') {
         const player = this.players.find((p) => p.id === (eventRes.data as EventResponsePlayer).id);
         if (!player) {
