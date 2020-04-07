@@ -1,62 +1,44 @@
 import '@babylonjs/loaders';
-import { Engine, Vector3, SceneLoader } from '@babylonjs/core';
+import { SceneLoader, Vector3 } from '@babylonjs/core';
 
-import { createScene, sceneInput } from './scene/scene';
-import { sceneLight, sceneSky, sceneLightImpostor } from './scene/light';
-import { createCamera, cameraFollow, CAMERA_DISTANCE } from './scene/camera';
-import loadMap from './scene/map';
+import Torch from './scene/torch';
 import Player from './player';
+import Sunlight from './scene/sunlight';
+import Game from './game';
+import FollowCamera from './camera/follow';
 
 const Main = async (): Promise<void> => {
-  // Core configuration
-  const canvas = document.getElementById('canvas') as HTMLCanvasElement;
-  const engine = new Engine(canvas, true);
-
-  // Scene configuration
-  const scene = createScene(engine);
-  const input = sceneInput(scene);
+  // Create game
+  const game = new Game();
+  game.loadMap();
+  game.scene.gravity = new Vector3(0, -9.81, 0);
+  game.scene.debugLayer.show();
 
   // Player configuration
-  const { meshes, skeletons } = await SceneLoader.ImportMeshAsync('', 'assets/', 'hunter.babylon', scene);
-  const player = new Player(scene, meshes, skeletons);
+  const { meshes, skeletons } = await SceneLoader.ImportMeshAsync('', 'assets/', 'hunter.babylon', game.scene);
+  const player = new Player(game.scene, meshes, skeletons);
+  player.lookAtCursor();
+  player.readControls();
 
-  // Ambience configuration
-  let playerNexttorch = new Vector3(0, 0, 0);
-  const torch = sceneLight(scene);
+  // Lighting configuration
+  const torch = new Torch(game.scene);
+  torch.intensity = 1;
 
-  sceneSky(scene);
-  const lightImpostor = sceneLightImpostor(scene, player.mesh.body);
+  const sunlight = new Sunlight(game.scene);
+  sunlight.intensity = 0.5;
 
-  // Camera configuration
-  const camera = createCamera(scene, player.mesh.body, canvas, CAMERA_DISTANCE);
+  // Create camera
+  const camera = new FollowCamera(game, player.mesh.body);
 
-  // World configuration
-  loadMap(scene);
-
-  scene.registerBeforeRender(() => {
-    // Player speed
-    player.setSpeedByInput(input);
-
-    // Turn direction based on speed
-    player.updateDirection();
-
-    // Move player
+  game.scene.registerBeforeRender(() => {
     player.move();
-
-    // Torch follow player
-    playerNexttorch = lightImpostor.getAbsolutePosition();
-    torch.position.copyFrom(playerNexttorch);
-    torch.intensity = 1;
-    torch.position.x += Math.random() * 0.125 - 0.0625;
-    torch.position.z += Math.random() * 0.125 - 0.0625;
-
-    // Follow target
-    cameraFollow(camera, player.mesh.body, CAMERA_DISTANCE);
+    torch.copyPositionFrom(player.position);
+    camera.follow(player.mesh.body);
   });
 
   // Game loop
-  engine.runRenderLoop(() => {
-    scene.render();
+  game.engine.runRenderLoop(() => {
+    game.scene.render();
   });
 };
 
