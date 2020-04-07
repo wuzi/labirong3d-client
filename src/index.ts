@@ -24,6 +24,8 @@ const Main = async (): Promise<void> => {
 
   // Ambience configuration
   const torch = new Torch(scene);
+  torch.intensity = 1;
+
   const sunlight = new Sunlight(scene);
   sunlight.intensity = 0.5;
 
