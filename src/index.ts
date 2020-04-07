@@ -26,6 +26,7 @@ const Main = async (): Promise<void> => {
   // Player configuration
   const { meshes, skeletons } = await SceneLoader.ImportMeshAsync('', 'assets/', 'hunter.babylon', scene);
   const player = new Player(scene, meshes, skeletons);
+  player.updateDirection();
 
   // Ambience configuration
   const torch = sceneLight(scene);
@@ -43,9 +44,6 @@ const Main = async (): Promise<void> => {
     // Player speed
     player.setGravity();
     player.setSpeedByInput(input);
-
-    // Turn direction based on speed
-    player.updateDirection();
 
     // Move player
     player.move();

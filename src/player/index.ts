@@ -1,5 +1,5 @@
 import {
-  Scene, Vector3, Axis, AbstractMesh, Skeleton,
+  Scene, Vector3, AbstractMesh, Skeleton,
 } from '@babylonjs/core';
 import PlayerMesh from './mesh';
 
@@ -12,13 +12,17 @@ export default class Player {
 
   private readonly gravity: Vector3;
 
-  constructor(scene: Scene, meshes: AbstractMesh[], skeletons: Skeleton[]) {
+  private direction: Vector3;
+
+  constructor(private scene: Scene, meshes: AbstractMesh[], skeletons: Skeleton[]) {
     this.mesh = new PlayerMesh(scene, meshes[0], skeletons[0]);
     this.mesh.body.position.x = 12;
     this.mesh.body.position.y = 10;
 
+    this.scene = scene;
     this.speed = new Vector3(0, 0, 0);
-    this.gravity = new Vector3(0, -0.3, 0);
+    this.gravity = new Vector3(0, -0.1, 0);
+    this.direction = new Vector3();
   }
 
   public setSpeedByInput(input: Input): void {
@@ -55,45 +59,19 @@ export default class Player {
   }
 
   public updateDirection(): void {
-    if (this.speed.length() <= 0.01) {
-      return;
-    }
+    window.addEventListener('mousemove', () => {
+      const pickResult = this.scene.pick(this.scene.pointerX, this.scene.pointerY);
 
-    const tempSpeed = new Vector3(0, 0, 0);
-    tempSpeed.copyFrom(this.speed);
+      if (pickResult && pickResult.hit) {
+        const direction = pickResult.pickedPoint;
+        if (direction) {
+          this.direction.x = direction.x - this.mesh.body.position.x;
+          this.direction.y = direction.z - this.mesh.body.position.z;
 
-    const dot = Vector3.Dot(tempSpeed.normalize(), Axis.Z);
-    let al = Math.acos(dot);
-    let t = 0;
-
-    if (tempSpeed.x < 0.0) {
-      al = Math.PI * 2.0 - al;
-    }
-
-    if (al > this.mesh.body.rotation.y) {
-      t = Math.PI / 30;
-    } else {
-      t = -Math.PI / 30;
-    }
-
-    const ad = Math.abs(this.mesh.body.rotation.y - al);
-
-    if (ad > Math.PI) {
-      t = -t;
-    }
-
-    if (ad < Math.PI / 15) {
-      t = 0;
-    }
-
-    this.mesh.body.rotation.y += t;
-
-    if (this.mesh.body.rotation.y > Math.PI * 2) {
-      this.mesh.body.rotation.y -= Math.PI * 2;
-    }
-
-    if (this.mesh.body.rotation.y < 0) {
-      this.mesh.body.rotation.y += Math.PI * 2;
-    }
+          const angle = Math.atan2(-this.direction.x, -this.direction.y);
+          this.mesh.body.rotation.y = angle;
+        }
+      }
+    });
   }
 }

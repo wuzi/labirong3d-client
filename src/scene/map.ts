@@ -5,6 +5,7 @@ const loadMap = (scene: Scene): void => {
     meshes.map((meshe) => {
       const finalMeshe = meshe;
       finalMeshe.checkCollisions = true;
+      finalMeshe.isPickable = true;
 
       return meshe;
     });
