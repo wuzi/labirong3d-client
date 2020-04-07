@@ -1,14 +1,11 @@
 import { SceneLoader, Scene } from '@babylonjs/core';
 
-const loadMap = (scene: Scene): void => {
-  SceneLoader.ImportMesh('', 'assets/', 'village.obj', scene, (meshes) => {
-    meshes.map((meshe) => {
-      const finalMeshe = meshe;
-      finalMeshe.checkCollisions = true;
-      finalMeshe.isPickable = true;
-
-      return meshe;
-    });
+const loadMap = async (scene: Scene): Promise<void> => {
+  const { meshes } = await SceneLoader.ImportMeshAsync('', 'assets/', 'village.obj', scene);
+  meshes.map((m) => {
+    const mesh = m;
+    mesh.checkCollisions = true;
+    return mesh;
   });
 };
 
