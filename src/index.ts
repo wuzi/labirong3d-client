@@ -2,7 +2,6 @@ import '@babylonjs/loaders';
 import { SceneLoader, Vector3 } from '@babylonjs/core';
 
 import { cameraFollow, CAMERA_DISTANCE, createCamera } from './scene/camera';
-import loadMap from './scene/map';
 import Torch from './scene/torch';
 import Player from './player';
 import Sunlight from './scene/sunlight';
@@ -11,6 +10,7 @@ import Game from './game';
 const Main = async (): Promise<void> => {
   // Create game
   const game = new Game();
+  game.loadMap();
   game.scene.gravity = new Vector3(0, -9.81, 0);
   game.scene.debugLayer.show();
 
@@ -29,9 +29,6 @@ const Main = async (): Promise<void> => {
 
   // Camera configuration
   const camera = createCamera(game.scene, player.mesh.body, game.canvas, CAMERA_DISTANCE);
-
-  // World configuration
-  loadMap(game.scene);
 
   game.scene.registerBeforeRender(() => {
     // Move player

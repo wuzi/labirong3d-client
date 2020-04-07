@@ -12,4 +12,18 @@ export default class Game {
     this.engine = new BABYLON.Engine(this.canvas, true);
     this.scene = new BABYLON.Scene(this.engine);
   }
+
+  public async loadMap(): Promise<void> {
+    const { meshes } = await BABYLON.SceneLoader.ImportMeshAsync('', 'assets/', 'village.obj', this.scene);
+    meshes.map((m) => {
+      const mesh = m;
+
+      if (mesh.name.search('terrain_grass') === -1) {
+        mesh.isPickable = false;
+      }
+
+      mesh.checkCollisions = true;
+      return mesh;
+    });
+  }
 }
