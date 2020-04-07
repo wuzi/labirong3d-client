@@ -4,6 +4,8 @@ import {
 import PlayerMesh from './mesh';
 
 export default class Player {
+  public id: number;
+
   public readonly mesh: PlayerMesh;
 
   private readonly velocity = 0.07;
@@ -17,6 +19,8 @@ export default class Player {
   private keyPressed: Input;
 
   constructor(private scene: Scene, meshes: AbstractMesh[], skeletons: Skeleton[]) {
+    this.id = -1;
+
     this.mesh = new PlayerMesh(scene, meshes[0], skeletons[0]);
     this.mesh.body.position.x = 12;
     this.mesh.body.position.y = 10;

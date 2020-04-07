@@ -6,6 +6,7 @@ import Player from './player';
 import Sunlight from './scene/sunlight';
 import Game from './game';
 import FollowCamera from './camera/follow';
+import Network from './network';
 
 const Main = async (): Promise<void> => {
   // Create game
@@ -30,6 +31,17 @@ const Main = async (): Promise<void> => {
   // Create camera
   const camera = new FollowCamera(game, player.mesh.body);
 
+  // Connect to server
+  try {
+    const network = new Network('ws://localhost:8080/ws');
+    await network.connect();
+    player.id = await network.getClientId();
+  } catch (err) {
+    // eslint-disable-next-line no-alert
+    alert('Failed to connect to server!');
+  }
+
+  // Do stuff before render
   game.scene.registerBeforeRender(() => {
     player.move();
     torch.copyPositionFrom(player.position);
