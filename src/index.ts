@@ -1,11 +1,11 @@
 import '@babylonjs/loaders';
 import { SceneLoader, Vector3 } from '@babylonjs/core';
 
-import { cameraFollow, CAMERA_DISTANCE, createCamera } from './scene/camera';
 import Torch from './scene/torch';
 import Player from './player';
 import Sunlight from './scene/sunlight';
 import Game from './game';
+import FollowCamera from './camera/follow';
 
 const Main = async (): Promise<void> => {
   // Create game
@@ -27,13 +27,13 @@ const Main = async (): Promise<void> => {
   const sunlight = new Sunlight(game.scene);
   sunlight.intensity = 0.5;
 
-  // Camera configuration
-  const camera = createCamera(game.scene, player.mesh.body, game.canvas, CAMERA_DISTANCE);
+  // Create camera
+  const camera = new FollowCamera(game, player.mesh.body);
 
   game.scene.registerBeforeRender(() => {
     player.move();
     torch.copyPositionFrom(player.position);
-    cameraFollow(camera, player.mesh.body, CAMERA_DISTANCE);
+    camera.follow(player.mesh.body);
   });
 
   // Game loop
