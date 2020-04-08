@@ -38,8 +38,8 @@ const Main = async (): Promise<void> => {
     await network.syncPlayers();
     network.listen();
   } catch (err) {
-    // eslint-disable-next-line no-alert
-    alert('Failed to connect to server!');
+    // eslint-disable-next-line no-console
+    console.error('Failed to connect to server!');
   }
 
   // Do stuff before render
