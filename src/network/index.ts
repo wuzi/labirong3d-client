@@ -5,16 +5,10 @@ import Game from '../game';
 export default class Network {
   private connection: WebSocket | undefined;
 
-  private game: Game | undefined;
-
-  private localPlayer: Player | undefined;
-
   public players: Player[];
 
-  constructor(private url: string, game: Game, localPlayer: Player) {
+  constructor(private url: string, private game: Game, private localPlayer: Player) {
     this.players = [];
-    this.game = game;
-    this.localPlayer = localPlayer;
   }
 
   public connect(): Promise<void> {
@@ -43,12 +37,10 @@ export default class Network {
       this.connection.onmessage = (e: MessageEvent): void => {
         const eventRes = JSON.parse(e.data);
         if (eventRes.name === 'getServerInfo') {
-          if (this.localPlayer) {
-            this.localPlayer.id = eventRes.data.id;
-          }
+          this.localPlayer.id = eventRes.data.id;
 
           eventRes.data.players.forEach((p: { id: number }) => {
-            if (!this.localPlayer || p.id === this.localPlayer.id) return;
+            if (p.id === this.localPlayer.id) return;
             this.addPlayer(p.id);
           });
 
@@ -63,10 +55,6 @@ export default class Network {
   }
 
   private async addPlayer(id: number): Promise<void> {
-    if (!this.game) {
-      throw new Error('game is not set in the network');
-    }
-
     const { meshes, skeletons } = await BABYLON.SceneLoader.ImportMeshAsync('', 'assets/', 'hunter.babylon', this.game.scene);
     const player = new Player(this.game.scene, meshes, skeletons);
 
@@ -84,10 +72,6 @@ export default class Network {
         throw new Error('not connected');
       }
 
-      if (!this.localPlayer) {
-        throw new Error('local player not set in network');
-      }
-
       const eventRes: {
         name: string;
         data: EventResponsePlayer | EventResponsePlayer[];
@@ -96,10 +80,6 @@ export default class Network {
       if (eventRes.name === 'update') {
         // Update connected players position
         (eventRes.data as EventResponsePlayer[]).forEach((p) => {
-          if (!this.localPlayer) {
-            throw new Error('local player not set in network');
-          }
-
           if (p.id === this.localPlayer.id) return;
 
           const player = this.players.find((pl) => pl.id === p.id);
