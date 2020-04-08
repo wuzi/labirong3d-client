@@ -54,14 +54,6 @@ export default class Network {
     }));
   }
 
-  private async addPlayer(id: number): Promise<void> {
-    const { meshes, skeletons } = await BABYLON.SceneLoader.ImportMeshAsync('', 'assets/', 'hunter.babylon', this.game.scene);
-    const player = new Player(this.game.scene, meshes, skeletons);
-
-    player.id = id;
-    this.players.push(player);
-  }
-
   public listen(): void {
     if (!this.connection) {
       throw new Error('not connected');
@@ -114,14 +106,24 @@ export default class Network {
       } else if (eventRes.name === 'playerJoin') {
         this.addPlayer((eventRes.data as EventResponsePlayer).id);
       } else if (eventRes.name === 'playerQuit') {
-        const player = this.players.find((p) => p.id === (eventRes.data as EventResponsePlayer).id);
-        if (!player) {
-          return;
-        }
-
-        this.players.splice(this.players.indexOf(player), 1);
-        player.mesh.dispose();
+        this.removePlayer((eventRes.data as EventResponsePlayer).id);
       }
     };
+  }
+
+  private async addPlayer(id: number): Promise<void> {
+    const { meshes, skeletons } = await BABYLON.SceneLoader.ImportMeshAsync('', 'assets/', 'hunter.babylon', this.game.scene);
+    const player = new Player(this.game.scene, meshes, skeletons);
+
+    player.id = id;
+    this.players.push(player);
+  }
+
+  private async removePlayer(id: number): Promise<void> {
+    const player = this.players.find((p) => p.id === id);
+    if (player) {
+      this.players.splice(this.players.indexOf(player), 1);
+      player.mesh.dispose();
+    }
   }
 }
