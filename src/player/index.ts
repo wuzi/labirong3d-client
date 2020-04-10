@@ -59,7 +59,7 @@ export default class Player {
   public move(): void {
     const speed = this.speed.add(this.gravity);
     this.mesh.body.moveWithCollisions(speed);
-    if (speed.x !== 0.0) this.sendPositionToGameServer();
+    if (speed.x !== 0.0 || speed.z !== 0.0) this.sendPositionToGameServer();
   }
 
   public readControls(): void {
