@@ -1,6 +1,12 @@
 import {
-  Scene, Vector3, AbstractMesh, Skeleton, ActionManager, ExecuteCodeAction,
+  AbstractMesh,
+  ActionManager,
+  ExecuteCodeAction,
+  Skeleton,
+  Vector3,
 } from '@babylonjs/core';
+
+import Game from '../game';
 import PlayerMesh from './mesh';
 
 export default class Player {
@@ -16,12 +22,16 @@ export default class Player {
 
   private keyPressed: Input;
 
-  constructor(private scene: Scene, meshes: AbstractMesh[], skeletons: Skeleton[]) {
-    this.mesh = new PlayerMesh(scene, meshes[0], skeletons[0]);
+  constructor(
+    private game: Game,
+    meshes: AbstractMesh[],
+    skeletons: Skeleton[],
+    public readonly id: number | undefined = undefined,
+  ) {
+    this.mesh = new PlayerMesh(game.scene, meshes[0], skeletons[0]);
     this.mesh.body.position.x = 12;
     this.mesh.body.position.y = 10;
 
-    this.scene = scene;
     this.speed = new Vector3(0, 0, 0);
     this.gravity = new Vector3(0, -0.1, 0);
     this.direction = new Vector3();
@@ -37,16 +47,24 @@ export default class Player {
     this.mesh.body.position = position;
   }
 
+  get rotation(): Vector3 {
+    return this.mesh.body.rotation;
+  }
+
+  set rotation(rotation: Vector3) {
+    this.mesh.body.rotation = rotation;
+  }
+
   public move(): void {
     const speed = this.speed.add(this.gravity);
     this.mesh.body.moveWithCollisions(speed);
+    if (speed.x !== 0.0) this.sendPositionToGameServer();
   }
 
   public readControls(): void {
-    const sceneCopy = this.scene;
-    sceneCopy.actionManager = new ActionManager(sceneCopy);
+    this.game.scene.actionManager = new ActionManager(this.game.scene);
 
-    sceneCopy.actionManager.registerAction(
+    this.game.scene.actionManager.registerAction(
       new ExecuteCodeAction(ActionManager.OnKeyDownTrigger, ((evt) => {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         (this.keyPressed as any)[evt.sourceEvent.key] = evt.sourceEvent.type === 'keydown';
@@ -54,7 +72,7 @@ export default class Player {
       })),
     );
 
-    sceneCopy.actionManager.registerAction(
+    this.game.scene.actionManager.registerAction(
       new ExecuteCodeAction(ActionManager.OnKeyUpTrigger, ((evt) => {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         (this.keyPressed as any)[evt.sourceEvent.key] = evt.sourceEvent.type === 'keydown';
@@ -65,7 +83,7 @@ export default class Player {
 
   public lookAtCursor(): void {
     window.addEventListener('mousemove', () => {
-      const pickResult = this.scene.pick(this.scene.pointerX, this.scene.pointerY);
+      const pickResult = this.game.scene.pick(this.game.scene.pointerX, this.game.scene.pointerY);
 
       if (pickResult && pickResult.hit) {
         const direction = pickResult.pickedPoint;
@@ -75,6 +93,7 @@ export default class Player {
 
           const angle = Math.atan2(-this.direction.x, -this.direction.y);
           this.mesh.body.rotation.y = angle;
+          this.sendPositionToGameServer();
         }
       }
     });
@@ -103,5 +122,22 @@ export default class Player {
       this.speed.x += this.velocity;
       this.speed.z += this.velocity;
     }
+  }
+
+  private sendPositionToGameServer(): void {
+    const data = {
+      position: {
+        x: this.position.x,
+        y: this.position.y,
+        z: this.position.z,
+      },
+      rotation: {
+        x: this.rotation.x,
+        y: this.rotation.y,
+        z: this.rotation.z,
+      },
+    };
+
+    this.game.network.send('movePlayer', data);
   }
 }

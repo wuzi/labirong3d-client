@@ -6,17 +6,21 @@ import Player from './player';
 import Sunlight from './scene/sunlight';
 import Game from './game';
 import FollowCamera from './camera/follow';
+import Network from './network';
 
 const Main = async (): Promise<void> => {
+  // Connect to game server
+  const network = new Network('ws://localhost:8080/ws');
+
   // Create game
-  const game = new Game();
+  const game = new Game(network);
   game.loadMap();
   game.scene.gravity = new Vector3(0, -9.81, 0);
   game.scene.debugLayer.show();
 
-  // Player configuration
+  // Create local player
   const { meshes, skeletons } = await SceneLoader.ImportMeshAsync('', 'assets/', 'hunter.babylon', game.scene);
-  const player = new Player(game.scene, meshes, skeletons);
+  const player = new Player(game, meshes, skeletons);
   player.lookAtCursor();
   player.readControls();
 
@@ -30,6 +34,7 @@ const Main = async (): Promise<void> => {
   // Create camera
   const camera = new FollowCamera(game, player.mesh.body);
 
+  // Do stuff before render
   game.scene.registerBeforeRender(() => {
     player.move();
     torch.copyPositionFrom(player.position);
