@@ -7,6 +7,7 @@ import {
 } from '@babylonjs/core';
 
 import Game from '../game';
+import Network from '../network';
 import PlayerMesh from './mesh';
 
 export default class Player {
@@ -125,6 +126,8 @@ export default class Player {
   }
 
   private sendPositionToGameServer(): void {
+    if (this.game.network.readyState !== Network.STATE.OPEN) return;
+
     const data = {
       position: {
         x: this.position.x,
