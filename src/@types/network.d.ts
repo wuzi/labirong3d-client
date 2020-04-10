@@ -1,4 +1,4 @@
-interface EventResponsePlayer {
+interface RemotePlayer {
   id: number;
   position: {
     x: number;

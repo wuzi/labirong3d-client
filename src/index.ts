@@ -9,15 +9,18 @@ import FollowCamera from './camera/follow';
 import Network from './network';
 
 const Main = async (): Promise<void> => {
+  // Connect to game server
+  const network = new Network('ws://localhost:8080/ws');
+
   // Create game
-  const game = new Game();
+  const game = new Game(network);
   game.loadMap();
   game.scene.gravity = new Vector3(0, -9.81, 0);
   game.scene.debugLayer.show();
 
-  // Player configuration
+  // Create local player
   const { meshes, skeletons } = await SceneLoader.ImportMeshAsync('', 'assets/', 'hunter.babylon', game.scene);
-  const player = new Player(game.scene, meshes, skeletons);
+  const player = new Player(game, meshes, skeletons);
   player.lookAtCursor();
   player.readControls();
 
@@ -30,17 +33,6 @@ const Main = async (): Promise<void> => {
 
   // Create camera
   const camera = new FollowCamera(game, player.mesh.body);
-
-  // Connect to server
-  try {
-    const network = new Network('ws://localhost:8080/ws', game, player);
-    await network.connect();
-    await network.syncPlayers();
-    network.listen();
-  } catch (err) {
-    // eslint-disable-next-line no-console
-    console.error('Failed to connect to server!');
-  }
 
   // Do stuff before render
   game.scene.registerBeforeRender(() => {
