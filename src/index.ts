@@ -21,7 +21,6 @@ const Main = async (): Promise<void> => {
   // Create local player
   const { meshes, skeletons } = await SceneLoader.ImportMeshAsync('', 'assets/', 'hunter.babylon', game.scene);
   const player = new Player(game, meshes, skeletons);
-  player.lookAtCursor();
   player.readControls();
 
   // Lighting configuration
@@ -32,12 +31,11 @@ const Main = async (): Promise<void> => {
   sunlight.intensity = 0.5;
 
   // Create camera
-  const camera = new FollowCamera(game, player.mesh.body);
+  new FollowCamera(game, player.mesh.body);
 
   // Do stuff before render
   game.scene.registerBeforeRender(() => {
     player.move();
-    camera.follow();
     torch.copyPositionFrom(player.position);
   });
 

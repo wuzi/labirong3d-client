@@ -2,7 +2,7 @@ import * as BABYLON from '@babylonjs/core';
 import Game from '../game';
 
 export default class FollowCamera {
-  private static readonly CAMERA_DISTANCE = 25;
+  private static readonly CAMERA_DISTANCE = 10;
 
   private readonly camera: BABYLON.FollowCamera;
 
@@ -10,19 +10,9 @@ export default class FollowCamera {
     private readonly game: Game,
     private readonly mesh: BABYLON.Mesh,
   ) {
-    this.camera = new BABYLON.FollowCamera('FollowCam', mesh.position.add(new BABYLON.Vector3(0.0, 5.0, -45.0)), this.game.scene);
+    this.camera = new BABYLON.FollowCamera('FollowCam', this.mesh.position.add(new BABYLON.Vector3(0.0, 5.0, -45.0)), this.game.scene);
+    this.camera.lockedTarget = this.mesh;
     this.camera.radius = FollowCamera.CAMERA_DISTANCE;
-    this.camera.heightOffset = 3;
-    this.camera.rotationOffset = 90;
-    this.camera.cameraAcceleration = 0;
-    this.camera.maxCameraSpeed = 20;
     this.camera.attachControl(this.game.canvas, true);
-    this.camera.lockedTarget = mesh;
-  }
-
-  public follow(): void {
-    this.camera.position.x = this.mesh.position.x + FollowCamera.CAMERA_DISTANCE;
-    this.camera.position.y = this.mesh.position.y + FollowCamera.CAMERA_DISTANCE;
-    this.camera.position.z = this.mesh.position.z - FollowCamera.CAMERA_DISTANCE;
   }
 }

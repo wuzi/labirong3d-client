@@ -19,7 +19,7 @@ export default class Player {
 
   private readonly gravity: Vector3;
 
-  private direction: Vector3;
+  private angle: number;
 
   private keyPressed: Input;
 
@@ -33,9 +33,9 @@ export default class Player {
     this.mesh.body.position.x = 12;
     this.mesh.body.position.y = 10;
 
+    this.angle = 0;
     this.speed = new Vector3(0, 0, 0);
-    this.gravity = new Vector3(0, -0.1, 0);
-    this.direction = new Vector3();
+    this.gravity = new Vector3(0, -this.velocity, 0);
 
     this.keyPressed = {};
   }
@@ -58,8 +58,13 @@ export default class Player {
 
   public move(): void {
     const speed = this.speed.add(this.gravity);
+
+    this.mesh.body.rotation.y += this.angle;
     this.mesh.body.moveWithCollisions(speed);
-    if (speed.x !== 0.0 || speed.z !== 0.0) this.sendPositionToGameServer();
+
+    if (speed.x !== 0.0 || speed.z !== 0.0 || this.angle !== 0) {
+      this.sendPositionToGameServer();
+    }
   }
 
   public readControls(): void {
@@ -82,46 +87,23 @@ export default class Player {
     );
   }
 
-  public lookAtCursor(): void {
-    window.addEventListener('mousemove', () => {
-      const pickResult = this.game.scene.pick(this.game.scene.pointerX, this.game.scene.pointerY);
-
-      if (pickResult && pickResult.hit) {
-        const direction = pickResult.pickedPoint;
-        if (direction) {
-          this.direction.x = direction.x - this.mesh.body.position.x;
-          this.direction.y = direction.z - this.mesh.body.position.z;
-
-          const angle = Math.atan2(-this.direction.x, -this.direction.y);
-          this.mesh.body.rotation.y = angle;
-          this.sendPositionToGameServer();
-        }
-      }
-    });
-  }
-
   private setSpeedByKeyPress(): void {
+    this.angle = 0;
     this.speed.x = 0.0;
-    this.speed.z = 0.00001;
+    this.speed.z = 0.0;
 
     if (this.keyPressed.w || this.keyPressed.ArrowUp) {
-      this.speed.x += -this.velocity;
-      this.speed.z += this.velocity;
+      this.speed.x += -this.mesh.body.forward.x / 10;
+      this.speed.z += -this.mesh.body.forward.z / 10;
+    } else if (this.keyPressed.s || this.keyPressed.ArrowDown) {
+      this.speed.x += this.mesh.body.forward.x / 10;
+      this.speed.z += this.mesh.body.forward.z / 10;
     }
 
     if (this.keyPressed.a || this.keyPressed.ArrowLeft) {
-      this.speed.x += -this.velocity;
-      this.speed.z += -this.velocity;
-    }
-
-    if (this.keyPressed.s || this.keyPressed.ArrowDown) {
-      this.speed.x += this.velocity;
-      this.speed.z += -this.velocity;
-    }
-
-    if (this.keyPressed.d || this.keyPressed.ArrowRight) {
-      this.speed.x += this.velocity;
-      this.speed.z += this.velocity;
+      this.angle = -this.velocity;
+    } else if (this.keyPressed.d || this.keyPressed.ArrowRight) {
+      this.angle = this.velocity;
     }
   }
 
