@@ -37,8 +37,8 @@ const Main = async (): Promise<void> => {
   // Do stuff before render
   game.scene.registerBeforeRender(() => {
     player.move();
+    camera.follow();
     torch.copyPositionFrom(player.position);
-    camera.follow(player.mesh.body);
   });
 
   // Game loop
