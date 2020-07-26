@@ -19,11 +19,6 @@
       "eslint"
     ]
   },
-  "buildpacks": [
-    {
-      "url": "https://github.com/heroku/heroku-buildpack-static"
-    }
-  ],
   "author": "",
   "license": "ISC",
   "devDependencies": {
