@@ -10,7 +10,7 @@ import Network from './network';
 
 const Main = async (): Promise<void> => {
   // Connect to game server
-  const network = new Network('ws://localhost:8080/ws');
+  const network = new Network('ws://labirong-3d-server.herokuapp.com/ws');
 
   // Create game
   const game = new Game(network);
