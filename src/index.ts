@@ -10,7 +10,7 @@ import Network from './network';
 
 const Main = async (): Promise<void> => {
   // Connect to game server
-  const network = new Network('ws://labirong-3d-server.herokuapp.com/ws');
+  const network = new Network('wss://labirong-3d-server.herokuapp.com/ws');
 
   // Create game
   const game = new Game(network);
@@ -31,7 +31,8 @@ const Main = async (): Promise<void> => {
   sunlight.intensity = 0.5;
 
   // Create camera
-  new FollowCamera(game, player.mesh.body);
+  const camera = new FollowCamera(game, player.mesh.body);
+  camera.lockTarget(player.mesh.body);
 
   // Do stuff before render
   game.scene.registerBeforeRender(() => {

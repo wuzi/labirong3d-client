@@ -11,8 +11,11 @@ export default class FollowCamera {
     private readonly mesh: BABYLON.Mesh,
   ) {
     this.camera = new BABYLON.FollowCamera('FollowCam', this.mesh.position.add(new BABYLON.Vector3(0.0, 5.0, -45.0)), this.game.scene);
-    this.camera.lockedTarget = this.mesh;
     this.camera.radius = FollowCamera.CAMERA_DISTANCE;
     this.camera.attachControl(this.game.canvas, true);
+  }
+
+  public lockTarget(target: BABYLON.Nullable<BABYLON.AbstractMesh>): void {
+    this.camera.lockedTarget = target;
   }
 }
