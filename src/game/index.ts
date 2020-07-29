@@ -18,6 +18,9 @@ export default class Game {
     this.network.connection.onopen = (): void => {
       this.syncRemotePlayers();
     };
+    if (process.env.NODE_ENV === 'development') {
+      this.scene.debugLayer.show();
+    }
   }
 
   public async loadMap(): Promise<void> {

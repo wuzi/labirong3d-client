@@ -16,7 +16,6 @@ const Main = async (): Promise<void> => {
   const game = new Game(network);
   game.loadMap();
   game.scene.gravity = new Vector3(0, -9.81, 0);
-  game.scene.debugLayer.show();
 
   // Create local player
   const { meshes, skeletons } = await SceneLoader.ImportMeshAsync('', 'assets/', 'hunter.babylon', game.scene);
