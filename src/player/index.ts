@@ -30,8 +30,8 @@ export default class Player {
     public readonly id: number | undefined = undefined,
   ) {
     this.mesh = new PlayerMesh(game.scene, meshes[0], skeletons[0]);
-    this.mesh.body.position.x = 12;
-    this.mesh.body.position.y = 10;
+    this.mesh.body.position.x = 0;
+    this.mesh.body.position.y = 0;
 
     this.angle = 0;
     this.speed = new Vector3(0, 0, 0);

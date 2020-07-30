@@ -9,32 +9,25 @@ export default class Game {
 
   public readonly scene: BABYLON.Scene;
 
+  public readonly ground: BABYLON.Mesh;
+
   public readonly players: Player[] = [];
 
   constructor(public readonly network: Network) {
     this.canvas = document.getElementById('canvas') as HTMLCanvasElement;
     this.engine = new BABYLON.Engine(this.canvas, true);
     this.scene = new BABYLON.Scene(this.engine);
+
+    this.ground = BABYLON.MeshBuilder.CreateGround('gd', { height: 100, width: 100 });
+    this.ground.checkCollisions = true;
+
     this.network.connection.onopen = (): void => {
       this.syncRemotePlayers();
     };
+
     if (process.env.NODE_ENV === 'development') {
       this.scene.debugLayer.show();
     }
-  }
-
-  public async loadMap(): Promise<void> {
-    const { meshes } = await BABYLON.SceneLoader.ImportMeshAsync('', 'assets/', 'village.obj', this.scene);
-    meshes.map((m) => {
-      const mesh = m;
-
-      if (mesh.name.search('terrain_grass') === -1) {
-        mesh.isPickable = false;
-      }
-
-      mesh.checkCollisions = true;
-      return mesh;
-    });
   }
 
   private async addPlayer(remotePlayer: RemotePlayer): Promise<void> {

@@ -14,7 +14,6 @@ const Main = async (): Promise<void> => {
 
   // Create game
   const game = new Game(network);
-  game.loadMap();
   game.scene.gravity = new Vector3(0, -9.81, 0);
 
   // Create local player
