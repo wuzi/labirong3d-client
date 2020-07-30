@@ -1,47 +1,20 @@
-# ArenaFy Project
+# Labirong3D Game
 
-This Repository contains a sample BABYLON.js application.
+This is a remake of the [labirong](https://github.com/Wuzi/labirong) game in 3D using [Babylon.JS](https://www.babylonjs.com/), it is a project to test new things out and have fun, feel free to make changes and open pull requests!
 
-## Setup
+## Quick start
 
-Run the following commands from within the repository's root folder to setup the application:
+Run the following commands from within the repository's root folder to start the application:
 
 1. `npm install`
+2. `npm run dev`
 
-## Running
+## Scripts
+List of all the available scripts:
 
-Run the following commands from within the repository's root folder to run the project using `webpack-dev-server`:
-
-1. `npm start`
-
-## Build
-
-Run the following commands from within the repository's root folder to build the project using `webpack`:
-
-1. `npm run build`
-
-## Structure
-
-- `src/` *source code folder*
-
-    - `index.ts` *application entry point*
-
-    - `glsl.d.ts` *typescript definition file to resolve .glsl files*
-
-    - `Materials/` *folder for custom materials/shaders*
-
-        - `SampleMaterial.ts` *sample custom material*
-
-        - `Shaders/` *folder containing GLSL shader code*
-
-            - `Sample/` *folder containing sample shader* 
-
-                - `sample.fragment.glsl` *sample fragment shader*
-
-                - `sample.vertex.glsl` *sample vertex shader*
-
-- `public` *folder containing static assets*
-
-    - `index.html` *HTML entry point*
-
-- `dist` *folder containing output of build process*
+| NPM Script           | Description                                                                                       |
+| -------------------- | ------------------------------------------------------------------------------------------------- |
+| `dev`                | Runs the game in development mode with debugger                                                   |
+| `start`              | Runs the game in production mode                                                                  |
+| `build`              | Compiles all source `.ts` files to `bundle.js` and copy all assets to `/dist` folder              |
+| `lint`               | Lint all source `.ts` files                                                                       |

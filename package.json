@@ -1,7 +1,7 @@
 {
-  "name": "babylonjs-typescript-starter",
+  "name": "labirong3d",
   "version": "1.0.0",
-  "description": "",
+  "description": "A remake of the labirong game in 3D",
   "main": "index.js",
   "scripts": {
     "start": "webpack-dev-server --config webpack.config.prod.js",
