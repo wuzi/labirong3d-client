@@ -12,6 +12,8 @@ export default class Game {
 
   public readonly ground: BABYLON.Mesh;
 
+  private readonly skybox: BABYLON.Mesh;
+
   public readonly players: Player[] = [];
 
   public grid: number[][] = [];
@@ -20,6 +22,9 @@ export default class Game {
     this.canvas = document.getElementById('canvas') as HTMLCanvasElement;
     this.engine = new BABYLON.Engine(this.canvas, true);
     this.scene = new BABYLON.Scene(this.engine);
+
+    this.skybox = BABYLON.MeshBuilder.CreateBox('skyBox', { size: 1000.0 }, this.scene);
+    this.setSkyboxMaterial();
 
     this.ground = BABYLON.MeshBuilder.CreateGround('gd', { height: 128, width: 128 });
     this.ground.checkCollisions = true;
@@ -98,5 +103,15 @@ export default class Game {
         }
       });
     });
+  }
+
+  private setSkyboxMaterial(): void {
+    const skyboxMaterial = new BABYLON.StandardMaterial('skyBox', this.scene);
+    skyboxMaterial.backFaceCulling = false;
+    skyboxMaterial.reflectionTexture = new BABYLON.CubeTexture('assets/textures/skybox', this.scene);
+    skyboxMaterial.reflectionTexture.coordinatesMode = BABYLON.Texture.SKYBOX_MODE;
+    skyboxMaterial.diffuseColor = new BABYLON.Color3(0, 0, 0);
+    skyboxMaterial.specularColor = new BABYLON.Color3(0, 0, 0);
+    this.skybox.material = skyboxMaterial;
   }
 }
