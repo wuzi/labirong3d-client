@@ -1,9 +1,9 @@
 import * as BABYLON from '@babylonjs/core';
 
 export default class Wall {
-  public readonly mesh: BABYLON.Mesh;
+  private readonly mesh: BABYLON.Mesh;
 
-  public readonly material: BABYLON.StandardMaterial;
+  private readonly material: BABYLON.StandardMaterial;
 
   constructor(private scene: BABYLON.Scene) {
     this.material = new BABYLON.StandardMaterial('', this.scene);
