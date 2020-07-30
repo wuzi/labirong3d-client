@@ -1,6 +1,7 @@
 import * as BABYLON from '@babylonjs/core';
 import Network from '../network';
 import Player from '../player';
+import Wall from '../wall';
 
 export default class Game {
   public readonly canvas: HTMLCanvasElement;
@@ -13,12 +14,14 @@ export default class Game {
 
   public readonly players: Player[] = [];
 
+  public readonly grid: number[][] = [];
+
   constructor(public readonly network: Network) {
     this.canvas = document.getElementById('canvas') as HTMLCanvasElement;
     this.engine = new BABYLON.Engine(this.canvas, true);
     this.scene = new BABYLON.Scene(this.engine);
 
-    this.ground = BABYLON.MeshBuilder.CreateGround('gd', { height: 100, width: 100 });
+    this.ground = BABYLON.MeshBuilder.CreateGround('gd', { height: 128, width: 128 });
     this.ground.checkCollisions = true;
 
     this.network.connection.onopen = (): void => {
@@ -28,6 +31,8 @@ export default class Game {
     if (process.env.NODE_ENV === 'development') {
       this.scene.debugLayer.show();
     }
+
+    this.spawnWalls();
   }
 
   private async addPlayer(remotePlayer: RemotePlayer): Promise<void> {
@@ -88,5 +93,16 @@ export default class Game {
         reject(err);
       };
     }));
+  }
+
+  private spawnWalls(): void {
+    for (let x = 0; x < this.grid.length; x++) {
+      for (let z = 0; z < this.grid[x].length; z++) {
+        if (this.grid[x][z] === 1) {
+          const wall = new Wall(this.scene);
+          wall.position = new BABYLON.Vector3((x * 8) - 64, 0, (z * 8) - 64);
+        }
+      }
+    }
   }
 }
