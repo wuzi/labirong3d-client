@@ -30,8 +30,8 @@ export default class Player {
     public readonly id: number | undefined = undefined,
   ) {
     this.mesh = new PlayerMesh(game.scene, meshes[0], skeletons[0]);
-    this.mesh.body.position.x = 0;
-    this.mesh.body.position.y = 0;
+    this.mesh.body.position.x = this.getRandomSpawn();
+    this.mesh.body.position.z = 8 - 64;
 
     this.angle = 0;
     this.speed = new Vector3(0, 0, 0);
@@ -124,5 +124,20 @@ export default class Player {
     };
 
     this.game.network.send('movePlayer', data);
+  }
+
+  private getRandomSpawn(): number {
+    const spawns = [];
+    for (let x = 0; x < this.game.grid.length; x++) {
+      if (this.game.grid[x][1] === 0) {
+        spawns.push(x);
+      }
+    }
+
+    if (spawns.length < 1) {
+      return 0;
+    }
+
+    return (spawns[Math.floor(Math.random() * this.game.grid.length)] * 8) - 64;
   }
 }
