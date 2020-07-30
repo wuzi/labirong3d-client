@@ -14,7 +14,7 @@ export default class Game {
 
   public readonly players: Player[] = [];
 
-  private grid: number[][] = [];
+  public grid: number[][] = [];
 
   constructor(public readonly network: Network) {
     this.canvas = document.getElementById('canvas') as HTMLCanvasElement;
