@@ -7,7 +7,7 @@
     "start": "webpack-dev-server --config webpack.config.prod.js",
     "dev": "webpack-dev-server --config webpack.config.dev.js",
     "build": "webpack --config webpack.config.prod.js",
-    "lint": "eslint './src/**/*.ts'"
+    "lint": "eslint --ext .ts src/"
   },
   "husky": {
     "hooks": {
