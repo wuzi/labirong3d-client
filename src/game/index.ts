@@ -29,7 +29,6 @@ export default class Game {
     this.ground = BABYLON.MeshBuilder.CreateTiledGround('gd', {
       xmin: -64, xmax: 64, zmin: -64, zmax: 64, subdivisions: { w: 8, h: 8 },
     });
-    this.ground.checkCollisions = true;
     this.setGroundMaterial();
 
     this.network.connection.onopen = (): void => {

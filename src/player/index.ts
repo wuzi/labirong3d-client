@@ -17,8 +17,6 @@ export default class Player {
 
   private readonly speed: Vector3;
 
-  private readonly gravity: Vector3;
-
   private angle: number;
 
   private keyPressed: Input;
@@ -35,7 +33,6 @@ export default class Player {
 
     this.angle = 0;
     this.speed = new Vector3(0, 0, 0);
-    this.gravity = new Vector3(0, -this.velocity, 0);
 
     this.keyPressed = {};
   }
@@ -57,12 +54,10 @@ export default class Player {
   }
 
   public move(): void {
-    const speed = this.speed.add(this.gravity);
-
     this.mesh.body.rotation.y += this.angle;
-    this.mesh.body.moveWithCollisions(speed);
+    this.mesh.body.moveWithCollisions(this.speed);
 
-    if (speed.x !== 0.0 || speed.z !== 0.0 || this.angle !== 0) {
+    if (this.speed.x !== 0.0 || this.speed.z !== 0.0 || this.angle !== 0) {
       this.sendPositionToGameServer();
     }
   }
