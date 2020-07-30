@@ -25,6 +25,7 @@ module.exports = {
   rules: {
     "class-methods-use-this": "off",
     "no-underscore-dangle": "off",
+    "no-plusplus": [ "error", { "allowForLoopAfterthoughts": true } ],
     "import/extensions": [
       "error",
       "ignorePackages",
