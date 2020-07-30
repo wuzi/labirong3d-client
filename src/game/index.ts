@@ -26,8 +26,11 @@ export default class Game {
     this.skybox = BABYLON.MeshBuilder.CreateBox('skyBox', { size: 1000.0 }, this.scene);
     this.setSkyboxMaterial();
 
-    this.ground = BABYLON.MeshBuilder.CreateGround('gd', { height: 128, width: 128 });
+    this.ground = BABYLON.MeshBuilder.CreateTiledGround('gd', {
+      xmin: -64, xmax: 64, zmin: -64, zmax: 64, subdivisions: { w: 8, h: 8 },
+    });
     this.ground.checkCollisions = true;
+    this.setGroundMaterial();
 
     this.network.connection.onopen = (): void => {
       this.network.send('syncWorld');
@@ -115,5 +118,11 @@ export default class Game {
     skyboxMaterial.diffuseColor = new BABYLON.Color3(0, 0, 0);
     skyboxMaterial.specularColor = new BABYLON.Color3(0, 0, 0);
     this.skybox.material = skyboxMaterial;
+  }
+
+  private setGroundMaterial(): void {
+    const groundMaterial = new BABYLON.StandardMaterial('groundMaterial', this.scene);
+    groundMaterial.diffuseTexture = new BABYLON.Texture('assets/textures/floor.png', this.scene);
+    this.ground.material = groundMaterial;
   }
 }
