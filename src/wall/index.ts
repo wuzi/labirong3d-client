@@ -3,12 +3,10 @@ import * as BABYLON from '@babylonjs/core';
 export default class Wall {
   private readonly mesh: BABYLON.Mesh;
 
-  private readonly material: BABYLON.StandardMaterial;
-
-  constructor(private scene: BABYLON.Scene) {
-    this.material = new BABYLON.StandardMaterial('', this.scene);
-    this.material.diffuseTexture = new BABYLON.Texture('https://i.imgur.com/LrucUu6.jpg', this.scene);
-
+  constructor(
+    private scene: BABYLON.Scene,
+    private material: BABYLON.StandardMaterial,
+  ) {
     const options = {
       sideOrientation: BABYLON.Mesh.DOUBLESIDE,
       pattern: BABYLON.Mesh.FLIP_TILE,

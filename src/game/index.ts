@@ -95,10 +95,12 @@ export default class Game {
   }
 
   private spawnWalls(): void {
+    const material = new BABYLON.StandardMaterial('', this.scene);
+    material.diffuseTexture = new BABYLON.Texture('https://i.imgur.com/LrucUu6.jpg', this.scene);
     this.grid.forEach((tiles, x) => {
       tiles.forEach((tile, z) => {
         if (tile === 1) {
-          const wall = new Wall(this.scene);
+          const wall = new Wall(this.scene, material);
           wall.position = new BABYLON.Vector3((x * 8) - 64, 0, (z * 8) - 64);
         }
       });
