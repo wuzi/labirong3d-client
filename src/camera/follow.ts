@@ -23,7 +23,7 @@ export default class FollowCamera {
     this.camera.radius = FollowCamera.CAMERA_DISTANCE;
     this.camera.lowerRadiusLimit = -FollowCamera.CAMERA_DISTANCE;
     this.camera.upperRadiusLimit = FollowCamera.CAMERA_DISTANCE;
-    this.camera.lowerHeightOffsetLimit = 0;
+    this.camera.lowerHeightOffsetLimit = 0.5;
     this.camera.upperHeightOffsetLimit = FollowCamera.CAMERA_DISTANCE;
   }
 }
