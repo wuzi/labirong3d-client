@@ -98,7 +98,7 @@ export default class Game {
 
   private spawnWalls(): void {
     const material = new BABYLON.StandardMaterial('', this.scene);
-    material.diffuseTexture = new BABYLON.Texture('https://i.imgur.com/LrucUu6.jpg', this.scene);
+    material.diffuseTexture = new BABYLON.Texture('assets/textures/brick.png', this.scene);
     this.grid.forEach((tiles, x) => {
       tiles.forEach((tile, z) => {
         if (tile === 1) {
