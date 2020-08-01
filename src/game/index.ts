@@ -99,10 +99,26 @@ export default class Game {
   private spawnWalls(): void {
     const material = new BABYLON.StandardMaterial('', this.scene);
     material.diffuseTexture = new BABYLON.Texture('assets/textures/brick.png', this.scene);
+
+    const options = {
+      sideOrientation: BABYLON.Mesh.DOUBLESIDE,
+      pattern: BABYLON.Mesh.FLIP_TILE,
+      alignVertical: BABYLON.Mesh.TOP,
+      alignHorizontal: BABYLON.Mesh.LEFT,
+      width: 8,
+      height: 16,
+      depth: 8,
+      tileSize: 1,
+      tileWidth: 3,
+    };
+
+    const box = BABYLON.MeshBuilder.CreateTiledBox('', options, this.scene);
+    box.material = material;
+
     this.grid.forEach((tiles, x) => {
       tiles.forEach((tile, z) => {
         if (tile === 1) {
-          const wall = new Wall(this.scene, material);
+          const wall = new Wall(box);
           wall.position = new BABYLON.Vector3((x * 8) - 64, 0, (z * 8) - 64);
         }
       });
