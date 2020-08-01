@@ -5,7 +5,7 @@ import Torch from './scene/torch';
 import Player from './player';
 import Sunlight from './scene/sunlight';
 import Game from './game';
-import FollowCamera from './camera/follow';
+import Camera from './camera';
 import Network from './network';
 
 const Main = async (): Promise<void> => {
@@ -29,7 +29,7 @@ const Main = async (): Promise<void> => {
   sunlight.intensity = 0.5;
 
   // Create camera
-  const camera = new FollowCamera(game, player.mesh.body);
+  const camera = new Camera(game);
   camera.lockTarget(player.mesh.body);
 
   // Do stuff before render
