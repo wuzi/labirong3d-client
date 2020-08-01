@@ -18,16 +18,16 @@ export default class Player {
 
   constructor(
     private game: Game,
-    meshes: BABYLON.AbstractMesh[],
-    skeletons: BABYLON.Skeleton[],
+    meshes: BABYLON.AbstractMesh,
+    skeletons: BABYLON.Skeleton,
     public readonly id: number | undefined = undefined,
   ) {
-    this.mesh = meshes[0] as BABYLON.Mesh;
+    this.mesh = meshes as BABYLON.Mesh;
     this.mesh.scaling = new BABYLON.Vector3(0.015, 0.015, 0.015);
     this.mesh.position.x = this.getRandomSpawn();
     this.mesh.position.z = 8 - 64;
 
-    this.skeleton = skeletons[0] as BABYLON.Skeleton;
+    this.skeleton = skeletons;
     this.skeleton.animationPropertiesOverride = new BABYLON.AnimationPropertiesOverride();
     this.skeleton.animationPropertiesOverride.enableBlending = true;
     this.skeleton.animationPropertiesOverride.blendingSpeed = 0.05;

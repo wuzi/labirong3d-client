@@ -18,7 +18,7 @@ const Main = async (): Promise<void> => {
 
   // Create local player
   const { meshes, skeletons } = await SceneLoader.ImportMeshAsync('', 'assets/', 'hunter.babylon', game.scene);
-  const player = new Player(game, meshes, skeletons);
+  const player = new Player(game, meshes[0], skeletons[0]);
   player.readControls();
 
   // Lighting configuration

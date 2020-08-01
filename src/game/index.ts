@@ -75,7 +75,7 @@ export default class Game {
 
   private async addPlayer(remotePlayer: RemotePlayer): Promise<void> {
     const { meshes, skeletons } = await BABYLON.SceneLoader.ImportMeshAsync('', 'assets/', 'hunter.babylon', this.scene);
-    const player = new Player(this, meshes, skeletons, remotePlayer.id);
+    const player = new Player(this, meshes[0], skeletons[0], remotePlayer.id);
 
     player.position.x = remotePlayer.position.x;
     player.position.y = remotePlayer.position.y;
@@ -93,7 +93,7 @@ export default class Game {
     if (!player) return;
 
     this.players.splice(this.players.indexOf(player), 1);
-    player.mesh.dispose();
+    player.dispose();
   }
 
   private spawnWalls(): void {
