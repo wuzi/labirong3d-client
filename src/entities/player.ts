@@ -1,6 +1,4 @@
 import * as BABYLON from '@babylonjs/core';
-
-import Game from '../game';
 import Network from '../network';
 
 export default class Player {
@@ -17,17 +15,16 @@ export default class Player {
   private keyPressed: Input;
 
   constructor(
-    private game: Game,
-    meshes: BABYLON.AbstractMesh,
-    skeletons: BABYLON.Skeleton,
+    private readonly scene: BABYLON.Scene,
+    mesh: BABYLON.AbstractMesh,
+    skeleton: BABYLON.Skeleton,
+    private readonly network: Network,
     public readonly id: number | undefined = undefined,
   ) {
-    this.mesh = meshes as BABYLON.Mesh;
+    this.mesh = mesh as BABYLON.Mesh;
     this.mesh.scaling = new BABYLON.Vector3(0.015, 0.015, 0.015);
-    this.mesh.position.x = this.getRandomSpawn();
-    this.mesh.position.z = 8 - 64;
 
-    this.skeleton = skeletons;
+    this.skeleton = skeleton;
     this.skeleton.animationPropertiesOverride = new BABYLON.AnimationPropertiesOverride();
     this.skeleton.animationPropertiesOverride.enableBlending = true;
     this.skeleton.animationPropertiesOverride.blendingSpeed = 0.05;
@@ -35,7 +32,7 @@ export default class Player {
 
     const idleRange = this.skeleton.getAnimationRange('Idle');
     if (idleRange) {
-      this.game.scene.beginAnimation(this.skeleton, idleRange.from, idleRange.to, true);
+      this.scene.beginAnimation(this.skeleton, idleRange.from, idleRange.to, true);
     }
 
     this.angle = 0;
@@ -70,9 +67,9 @@ export default class Player {
   }
 
   public readControls(): void {
-    this.game.scene.actionManager = new BABYLON.ActionManager(this.game.scene);
+    this.scene.actionManager = new BABYLON.ActionManager(this.scene);
 
-    this.game.scene.actionManager.registerAction(
+    this.scene.actionManager.registerAction(
       new BABYLON.ExecuteCodeAction(BABYLON.ActionManager.OnKeyDownTrigger, ((evt) => {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         (this.keyPressed as any)[evt.sourceEvent.key] = evt.sourceEvent.type === 'keydown';
@@ -80,7 +77,7 @@ export default class Player {
       })),
     );
 
-    this.game.scene.actionManager.registerAction(
+    this.scene.actionManager.registerAction(
       new BABYLON.ExecuteCodeAction(BABYLON.ActionManager.OnKeyUpTrigger, ((evt) => {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         (this.keyPressed as any)[evt.sourceEvent.key] = evt.sourceEvent.type === 'keydown';
@@ -115,7 +112,7 @@ export default class Player {
   }
 
   private sendPositionToGameServer(): void {
-    if (this.game.network.readyState !== Network.STATE.OPEN) return;
+    if (this.network.readyState !== Network.STATE.OPEN) return;
 
     const data = {
       position: {
@@ -130,21 +127,6 @@ export default class Player {
       },
     };
 
-    this.game.network.send('movePlayer', data);
-  }
-
-  private getRandomSpawn(): number {
-    const spawns = [];
-    for (let x = 0; x < this.game.grid.length; x++) {
-      if (this.game.grid[x][1] === 0) {
-        spawns.push(x);
-      }
-    }
-
-    if (spawns.length < 1) {
-      return 0;
-    }
-
-    return (spawns[Math.floor(Math.random() * this.game.grid.length)] * 8) - 64;
+    this.network.send('movePlayer', data);
   }
 }

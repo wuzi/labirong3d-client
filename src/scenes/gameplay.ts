@@ -3,7 +3,7 @@ import Network from '../network';
 import Player from '../entities/player';
 import Wall from '../entities/wall';
 
-export default class Game {
+export default class GameplayScene {
   public readonly canvas: HTMLCanvasElement;
 
   public readonly engine: BABYLON.Engine;
@@ -73,9 +73,24 @@ export default class Game {
     }
   }
 
+  public getRandomSpawn(): number {
+    const spawns = [];
+    for (let x = 0; x < this.grid.length; x++) {
+      if (this.grid[x][1] === 0) {
+        spawns.push(x);
+      }
+    }
+
+    if (spawns.length < 1) {
+      return 0;
+    }
+
+    return (spawns[Math.floor(Math.random() * this.grid.length)] * 8) - 64;
+  }
+
   private async addPlayer(remotePlayer: RemotePlayer): Promise<void> {
     const { meshes, skeletons } = await BABYLON.SceneLoader.ImportMeshAsync('', 'assets/', 'hunter.babylon', this.scene);
-    const player = new Player(this, meshes[0], skeletons[0], remotePlayer.id);
+    const player = new Player(this.scene, meshes[0], skeletons[0], this.network, remotePlayer.id);
 
     player.position.x = remotePlayer.position.x;
     player.position.y = remotePlayer.position.y;
