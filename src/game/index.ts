@@ -1,7 +1,7 @@
 import * as BABYLON from '@babylonjs/core';
 import Network from '../network';
-import Player from '../player';
-import Wall from '../wall';
+import Player from '../entities/player';
+import Wall from '../entities/wall';
 
 export default class Game {
   public readonly canvas: HTMLCanvasElement;

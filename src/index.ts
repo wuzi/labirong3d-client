@@ -1,12 +1,12 @@
 import '@babylonjs/loaders';
 import { SceneLoader, Vector3 } from '@babylonjs/core';
 
-import Torch from './scene/torch';
-import Player from './player';
-import Sunlight from './scene/sunlight';
 import Game from './game';
-import Camera from './camera';
 import Network from './network';
+import Torch from './entities/torch';
+import Player from './entities/player';
+import Sunlight from './entities/sunlight';
+import Camera from './entities/camera';
 
 const Main = async (): Promise<void> => {
   // Connect to game server
@@ -30,7 +30,7 @@ const Main = async (): Promise<void> => {
 
   // Create camera
   const camera = new Camera(game);
-  camera.lockTarget(player.mesh.body);
+  camera.lockTarget(player.mesh);
 
   // Do stuff before render
   game.scene.registerBeforeRender(() => {

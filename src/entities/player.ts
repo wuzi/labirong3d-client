@@ -1,21 +1,16 @@
-import {
-  AbstractMesh,
-  ActionManager,
-  ExecuteCodeAction,
-  Skeleton,
-  Vector3,
-} from '@babylonjs/core';
+import * as BABYLON from '@babylonjs/core';
 
 import Game from '../game';
 import Network from '../network';
-import PlayerMesh from './mesh';
 
 export default class Player {
-  public readonly mesh: PlayerMesh;
+  public readonly mesh: BABYLON.Mesh;
+
+  private readonly skeleton: BABYLON.Skeleton;
 
   private readonly velocity = 0.1;
 
-  private readonly speed: Vector3;
+  private readonly speed: BABYLON.Vector3;
 
   private angle: number;
 
@@ -23,39 +18,51 @@ export default class Player {
 
   constructor(
     private game: Game,
-    meshes: AbstractMesh[],
-    skeletons: Skeleton[],
+    meshes: BABYLON.AbstractMesh[],
+    skeletons: BABYLON.Skeleton[],
     public readonly id: number | undefined = undefined,
   ) {
-    this.mesh = new PlayerMesh(game.scene, meshes[0], skeletons[0]);
-    this.mesh.body.position.x = this.getRandomSpawn();
-    this.mesh.body.position.z = 8 - 64;
+    this.mesh = meshes[0] as BABYLON.Mesh;
+    this.mesh.scaling = new BABYLON.Vector3(0.015, 0.015, 0.015);
+    this.mesh.position.x = this.getRandomSpawn();
+    this.mesh.position.z = 8 - 64;
+
+    this.skeleton = skeletons[0] as BABYLON.Skeleton;
+    this.skeleton.animationPropertiesOverride = new BABYLON.AnimationPropertiesOverride();
+    this.skeleton.animationPropertiesOverride.enableBlending = true;
+    this.skeleton.animationPropertiesOverride.blendingSpeed = 0.05;
+    this.skeleton.animationPropertiesOverride.loopMode = 1;
+
+    const idleRange = this.skeleton.getAnimationRange('Idle');
+    if (idleRange) {
+      this.game.scene.beginAnimation(this.skeleton, idleRange.from, idleRange.to, true);
+    }
 
     this.angle = 0;
-    this.speed = new Vector3(0, 0, 0);
+    this.speed = new BABYLON.Vector3(0, 0, 0);
 
     this.keyPressed = {};
   }
 
-  get position(): Vector3 {
-    return this.mesh.body.position;
+  get position(): BABYLON.Vector3 {
+    return this.mesh.position;
   }
 
-  set position(position: Vector3) {
-    this.mesh.body.position = position;
+  set position(position: BABYLON.Vector3) {
+    this.mesh.position = position;
   }
 
-  get rotation(): Vector3 {
-    return this.mesh.body.rotation;
+  get rotation(): BABYLON.Vector3 {
+    return this.mesh.rotation;
   }
 
-  set rotation(rotation: Vector3) {
-    this.mesh.body.rotation = rotation;
+  set rotation(rotation: BABYLON.Vector3) {
+    this.mesh.rotation = rotation;
   }
 
   public move(): void {
-    this.mesh.body.rotation.y += this.angle;
-    this.mesh.body.moveWithCollisions(this.speed);
+    this.mesh.rotation.y += this.angle;
+    this.mesh.moveWithCollisions(this.speed);
 
     if (this.speed.x !== 0.0 || this.speed.z !== 0.0 || this.angle !== 0) {
       this.sendPositionToGameServer();
@@ -63,10 +70,10 @@ export default class Player {
   }
 
   public readControls(): void {
-    this.game.scene.actionManager = new ActionManager(this.game.scene);
+    this.game.scene.actionManager = new BABYLON.ActionManager(this.game.scene);
 
     this.game.scene.actionManager.registerAction(
-      new ExecuteCodeAction(ActionManager.OnKeyDownTrigger, ((evt) => {
+      new BABYLON.ExecuteCodeAction(BABYLON.ActionManager.OnKeyDownTrigger, ((evt) => {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         (this.keyPressed as any)[evt.sourceEvent.key] = evt.sourceEvent.type === 'keydown';
         this.setSpeedByKeyPress();
@@ -74,12 +81,17 @@ export default class Player {
     );
 
     this.game.scene.actionManager.registerAction(
-      new ExecuteCodeAction(ActionManager.OnKeyUpTrigger, ((evt) => {
+      new BABYLON.ExecuteCodeAction(BABYLON.ActionManager.OnKeyUpTrigger, ((evt) => {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         (this.keyPressed as any)[evt.sourceEvent.key] = evt.sourceEvent.type === 'keydown';
         this.setSpeedByKeyPress();
       })),
     );
+  }
+
+  public dispose(): void {
+    this.mesh.dispose();
+    this.skeleton.dispose();
   }
 
   private setSpeedByKeyPress(): void {
@@ -88,11 +100,11 @@ export default class Player {
     this.speed.z = 0.0;
 
     if (this.keyPressed.w || this.keyPressed.ArrowUp) {
-      this.speed.x += -this.mesh.body.forward.x / 10;
-      this.speed.z += -this.mesh.body.forward.z / 10;
+      this.speed.x += -this.mesh.forward.x / 10;
+      this.speed.z += -this.mesh.forward.z / 10;
     } else if (this.keyPressed.s || this.keyPressed.ArrowDown) {
-      this.speed.x += this.mesh.body.forward.x / 20;
-      this.speed.z += this.mesh.body.forward.z / 20;
+      this.speed.x += this.mesh.forward.x / 20;
+      this.speed.z += this.mesh.forward.z / 20;
     }
 
     if (this.keyPressed.a || this.keyPressed.ArrowLeft) {
