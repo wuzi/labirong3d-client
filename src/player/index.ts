@@ -91,8 +91,8 @@ export default class Player {
       this.speed.x += -this.mesh.body.forward.x / 10;
       this.speed.z += -this.mesh.body.forward.z / 10;
     } else if (this.keyPressed.s || this.keyPressed.ArrowDown) {
-      this.speed.x += this.mesh.body.forward.x / 10;
-      this.speed.z += this.mesh.body.forward.z / 10;
+      this.speed.x += this.mesh.body.forward.x / 20;
+      this.speed.z += this.mesh.body.forward.z / 20;
     }
 
     if (this.keyPressed.a || this.keyPressed.ArrowLeft) {
