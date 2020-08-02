@@ -67,19 +67,21 @@ export default class GameplayScene {
     }
   }
 
-  public getRandomSpawn(): number {
+  public getRandomSpawn(): BABYLON.Vector3 {
     const spawns = [];
+    const position = new BABYLON.Vector3(0, 0, 8 - 64);
+
     for (let x = 0; x < this.grid.length; x++) {
       if (this.grid[x][1] === 0) {
         spawns.push(x);
       }
     }
 
-    if (spawns.length < 1) {
-      return 0;
+    if (spawns.length > 0) {
+      position.x = (spawns[Math.floor(Math.random() * this.grid.length)] * 8) - 64;
     }
 
-    return (spawns[Math.floor(Math.random() * this.grid.length)] * 8) - 64;
+    return position;
   }
 
   private async addPlayer(remotePlayer: RemotePlayer): Promise<void> {

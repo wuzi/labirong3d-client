@@ -19,8 +19,7 @@ const Main = async (): Promise<void> => {
   // Create local player
   const { meshes, skeletons } = await SceneLoader.ImportMeshAsync('', 'assets/', 'hunter.babylon', gameplay.scene);
   const player = new Player(gameplay.scene, meshes[0], skeletons[0], gameplay.network);
-  player.position.x = gameplay.getRandomSpawn();
-  player.position.z = 8 - 64;
+  player.position = gameplay.getRandomSpawn();
   player.readControls();
 
   // Lighting configuration
