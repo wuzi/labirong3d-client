@@ -10,9 +10,17 @@ export default class Player {
 
   private readonly speed: BABYLON.Vector3;
 
+  private readonly idleRange: BABYLON.Nullable<BABYLON.AnimationRange>;
+
+  private readonly walkingRange: BABYLON.Nullable<BABYLON.AnimationRange>;
+
+  private readonly backwardsRange: BABYLON.Nullable<BABYLON.AnimationRange>;
+
   private angle: number;
 
   private keyPressed: Input;
+
+  private currentAnimation: 'Idle' | 'Walking' | 'Backwards';
 
   constructor(
     private readonly scene: BABYLON.Scene,
@@ -30,10 +38,12 @@ export default class Player {
     this.skeleton.animationPropertiesOverride.blendingSpeed = 0.05;
     this.skeleton.animationPropertiesOverride.loopMode = 1;
 
-    const idleRange = this.skeleton.getAnimationRange('Idle');
-    if (idleRange) {
-      this.scene.beginAnimation(this.skeleton, idleRange.from, idleRange.to, true);
-    }
+    this.idleRange = this.skeleton.getAnimationRange('Idle');
+    this.walkingRange = this.skeleton.getAnimationRange('Walking');
+    this.backwardsRange = this.skeleton.getAnimationRange('Backwards');
+
+    this.playAnim('Idle');
+    this.currentAnimation = 'Idle';
 
     this.angle = 0;
     this.speed = new BABYLON.Vector3(0, 0, 0);
@@ -97,11 +107,19 @@ export default class Player {
     this.speed.z = 0.0;
 
     if (this.keyPressed.w || this.keyPressed.ArrowUp) {
-      this.speed.x += -this.mesh.forward.x / 10;
-      this.speed.z += -this.mesh.forward.z / 10;
+      this.playAnim('Walking');
+      this.speed.x += -this.mesh.forward.x / 25;
+      this.speed.z += -this.mesh.forward.z / 25;
     } else if (this.keyPressed.s || this.keyPressed.ArrowDown) {
-      this.speed.x += this.mesh.forward.x / 20;
-      this.speed.z += this.mesh.forward.z / 20;
+      this.playAnim('Backwards');
+      this.speed.x += this.mesh.forward.x / 50;
+      this.speed.z += this.mesh.forward.z / 50;
+    } else if (
+      !this.keyPressed.w
+      && !this.keyPressed.ArrowUp
+      && !this.keyPressed.s
+      && !this.keyPressed.ArrowDown) {
+      this.playAnim('Idle');
     }
 
     if (this.keyPressed.a || this.keyPressed.ArrowLeft) {
@@ -109,6 +127,34 @@ export default class Player {
     } else if (this.keyPressed.d || this.keyPressed.ArrowRight) {
       this.angle = this.velocity;
     }
+  }
+
+  private playAnim(name: 'Idle' | 'Walking' | 'Backwards'): void {
+    if (name === this.currentAnimation) {
+      return;
+    }
+
+    if (name === 'Idle') {
+      if (this.idleRange) {
+        this.scene.beginAnimation(
+          this.skeleton, this.idleRange.from, this.idleRange.to, true,
+        );
+      }
+    } else if (name === 'Walking') {
+      if (this.walkingRange) {
+        this.scene.beginAnimation(
+          this.skeleton, this.walkingRange.from, this.walkingRange.to, true,
+        );
+      }
+    } else if (name === 'Backwards') {
+      if (this.backwardsRange) {
+        this.scene.beginAnimation(
+          this.skeleton, this.backwardsRange.from, this.backwardsRange.to, true,
+        );
+      }
+    }
+
+    this.currentAnimation = name;
   }
 
   private sendPositionToGameServer(): void {

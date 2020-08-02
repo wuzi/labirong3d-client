@@ -17,7 +17,7 @@ const Main = async (): Promise<void> => {
   gameplay.scene.gravity = new Vector3(0, -9.81, 0);
 
   // Create local player
-  const { meshes, skeletons } = await SceneLoader.ImportMeshAsync('', 'assets/', 'hunter.babylon', gameplay.scene);
+  const { meshes, skeletons } = await SceneLoader.ImportMeshAsync('', 'assets/', 'character.babylon', gameplay.scene);
   const player = new Player(gameplay.scene, meshes[0], skeletons[0], gameplay.network);
   player.position = gameplay.getRandomSpawn();
   player.readControls();
