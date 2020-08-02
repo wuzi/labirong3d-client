@@ -12,7 +12,7 @@ const Main = async (): Promise<void> => {
   // Connect to game server
   const network = new Network('wss://labirong-3d-server.herokuapp.com/ws');
 
-  // Create game
+  // Create scene
   const gameplay = new GameplayScene(network);
   gameplay.scene.gravity = new Vector3(0, -9.81, 0);
 
@@ -40,7 +40,7 @@ const Main = async (): Promise<void> => {
     torch.copyPositionFrom(player.position);
   });
 
-  // Game loop
+  // Scene loop
   gameplay.engine.runRenderLoop(() => {
     gameplay.scene.render();
   });

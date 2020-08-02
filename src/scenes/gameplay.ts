@@ -2,6 +2,8 @@ import * as BABYLON from '@babylonjs/core';
 import Network from '../network';
 import Player from '../entities/player';
 import Wall from '../entities/wall';
+import Skybox from '../entities/skybox';
+import Ground from '../entities/ground';
 
 export default class GameplayScene {
   public readonly canvas: HTMLCanvasElement;
@@ -10,9 +12,9 @@ export default class GameplayScene {
 
   public readonly scene: BABYLON.Scene;
 
-  public readonly ground: BABYLON.Mesh;
+  public readonly ground: Ground;
 
-  private readonly skybox: BABYLON.Mesh;
+  public readonly skybox: Skybox;
 
   public readonly players: Player[] = [];
 
@@ -22,14 +24,8 @@ export default class GameplayScene {
     this.canvas = document.getElementById('canvas') as HTMLCanvasElement;
     this.engine = new BABYLON.Engine(this.canvas, true);
     this.scene = new BABYLON.Scene(this.engine);
-
-    this.skybox = BABYLON.MeshBuilder.CreateBox('skyBox', { size: 1000.0 }, this.scene);
-    this.setSkyboxMaterial();
-
-    this.ground = BABYLON.MeshBuilder.CreateTiledGround('gd', {
-      xmin: -64, xmax: 64, zmin: -64, zmax: 64, subdivisions: { w: 8, h: 8 },
-    });
-    this.setGroundMaterial();
+    this.skybox = new Skybox(this.scene);
+    this.ground = new Ground(this.scene);
 
     this.network.connection.onopen = (): void => {
       this.network.send('syncWorld');
@@ -138,21 +134,5 @@ export default class GameplayScene {
         }
       });
     });
-  }
-
-  private setSkyboxMaterial(): void {
-    const skyboxMaterial = new BABYLON.StandardMaterial('skyBox', this.scene);
-    skyboxMaterial.backFaceCulling = false;
-    skyboxMaterial.reflectionTexture = new BABYLON.CubeTexture('assets/textures/skybox', this.scene);
-    skyboxMaterial.reflectionTexture.coordinatesMode = BABYLON.Texture.SKYBOX_MODE;
-    skyboxMaterial.diffuseColor = new BABYLON.Color3(0, 0, 0);
-    skyboxMaterial.specularColor = new BABYLON.Color3(0, 0, 0);
-    this.skybox.material = skyboxMaterial;
-  }
-
-  private setGroundMaterial(): void {
-    const groundMaterial = new BABYLON.StandardMaterial('groundMaterial', this.scene);
-    groundMaterial.diffuseTexture = new BABYLON.Texture('assets/textures/floor.png', this.scene);
-    this.ground.material = groundMaterial;
   }
 }
