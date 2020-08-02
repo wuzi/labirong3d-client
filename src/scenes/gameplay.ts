@@ -27,42 +27,40 @@ export default class GameplayScene {
     this.skybox = new Skybox(this.scene);
     this.ground = new Ground(this.scene);
 
-    this.network.connection.onopen = (): void => {
+    this.network.onConnect.add(() => {
       this.network.send('syncWorld');
-    };
+    });
 
-    this.network.connection.onmessage = (e: MessageEvent): void => {
-      const event = JSON.parse(e.data);
-      if (event.name === 'syncWorld') {
-        event.data.players.forEach((remotePlayer: RemotePlayer) => {
-          this.addPlayer(remotePlayer);
-        });
-        this.grid = event.data.grid;
-        this.spawnWalls();
-      } else if (event.name === 'playerJoin') {
-        this.addPlayer(event.data.player);
-      } else if (event.name === 'playerQuit') {
-        this.removePlayer(event.data.id);
-      } else if (event.name === 'update') {
-        event.data.players.forEach((remotePlayer: RemotePlayer) => {
-          const player = this.players.find((pl) => pl.id === remotePlayer.id);
-          if (!player) return;
+    this.network.onSyncWorld.add((data) => {
+      data.players.forEach((remotePlayer: RemotePlayer) => {
+        this.addPlayer(remotePlayer);
+      });
+      this.grid = data.grid;
+      this.spawnWalls();
+    });
 
-          player.position.x = remotePlayer.position.x;
-          player.position.y = remotePlayer.position.y;
-          player.position.z = remotePlayer.position.z;
+    this.network.onPlayerJoin.add((data) => {
+      this.addPlayer(data.player);
+    });
 
-          player.rotation.x = remotePlayer.rotation.x;
-          player.rotation.y = remotePlayer.rotation.y;
-          player.rotation.z = remotePlayer.rotation.z;
-        });
-      }
-    };
+    this.network.onPlayerQuit.add((data) => {
+      this.removePlayer(data.player.id);
+    });
 
-    this.network.connection.onerror = (err): void => {
-      // eslint-disable-next-line no-console
-      console.log(err);
-    };
+    this.network.onUpdate.add((data) => {
+      data.players.forEach((remotePlayer: RemotePlayer) => {
+        const player = this.players.find((pl) => pl.id === remotePlayer.id);
+        if (!player) return;
+
+        player.position.x = remotePlayer.position.x;
+        player.position.y = remotePlayer.position.y;
+        player.position.z = remotePlayer.position.z;
+
+        player.rotation.x = remotePlayer.rotation.x;
+        player.rotation.y = remotePlayer.rotation.y;
+        player.rotation.z = remotePlayer.rotation.z;
+      });
+    });
 
     if (process.env.NODE_ENV === 'development') {
       this.scene.debugLayer.show();
