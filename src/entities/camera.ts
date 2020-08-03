@@ -12,8 +12,8 @@ export default class Camera {
     this.camera.collisionRadius = new BABYLON.Vector3(1, 0.5, 1);
 
     this.camera.upperBetaLimit = Math.PI / 2;
-    this.camera.lowerRadiusLimit = 5;
-    this.camera.upperRadiusLimit = Camera.CAMERA_DISTANCE;
+    this.camera.lowerRadiusLimit = 2.8;
+    this.camera.upperRadiusLimit = 6;
 
     this.camera.attachControl(canvas, true);
   }
