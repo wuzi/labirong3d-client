@@ -3,6 +3,7 @@ import * as BABYLON from '@babylonjs/core';
 
 import GameplayScene from './scenes/gameplay';
 import Network from './network';
+import Chatbox from './network/chatbox';
 import Torch from './entities/torch';
 import Player from './entities/player';
 import Sunlight from './entities/sunlight';
@@ -36,6 +37,10 @@ const Main = async (): Promise<void> => {
   // Create camera
   const camera = new Camera(gameplay.scene, gameplay.canvas);
   camera.lockTarget(player.mesh);
+
+  // Create chatbox
+  const chatbox = new Chatbox();
+  chatbox.show();
 
   // Do stuff before render
   gameplay.scene.registerBeforeRender(() => {
