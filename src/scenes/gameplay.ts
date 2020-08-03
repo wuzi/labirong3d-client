@@ -86,7 +86,13 @@ export default class GameplayScene {
 
   private async addPlayer(remotePlayer: RemotePlayer): Promise<void> {
     const { meshes, skeletons } = await BABYLON.SceneLoader.ImportMeshAsync('', 'assets/', 'character.babylon', this.scene);
-    const player = new Player(this.scene, meshes[0], skeletons[0], this.network, remotePlayer.id);
+
+    const material = new BABYLON.StandardMaterial('characterMat', this.scene);
+    material.diffuseTexture = new BABYLON.Texture('assets/textures/character.png', this.scene);
+
+    const player = new Player(
+      this.scene, meshes[0], skeletons[0], material, this.network, remotePlayer.id,
+    );
 
     player.position.x = remotePlayer.position.x;
     player.position.y = remotePlayer.position.y;

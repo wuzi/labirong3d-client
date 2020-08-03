@@ -1,5 +1,5 @@
 import '@babylonjs/loaders';
-import { SceneLoader, Vector3 } from '@babylonjs/core';
+import * as BABYLON from '@babylonjs/core';
 
 import GameplayScene from './scenes/gameplay';
 import Network from './network';
@@ -14,11 +14,15 @@ const Main = async (): Promise<void> => {
 
   // Create scene
   const gameplay = new GameplayScene(network);
-  gameplay.scene.gravity = new Vector3(0, -9.81, 0);
+  gameplay.scene.gravity = new BABYLON.Vector3(0, -9.81, 0);
 
   // Create local player
-  const { meshes, skeletons } = await SceneLoader.ImportMeshAsync('', 'assets/', 'character.babylon', gameplay.scene);
-  const player = new Player(gameplay.scene, meshes[0], skeletons[0], gameplay.network);
+  const { meshes, skeletons } = await BABYLON.SceneLoader.ImportMeshAsync('', 'assets/', 'character.babylon', gameplay.scene);
+
+  const material = new BABYLON.StandardMaterial('characterMat', gameplay.scene);
+  material.diffuseTexture = new BABYLON.Texture('assets/textures/character.png', gameplay.scene);
+
+  const player = new Player(gameplay.scene, meshes[0], skeletons[0], material, gameplay.network);
   player.position = gameplay.getRandomSpawn();
   player.readControls();
 

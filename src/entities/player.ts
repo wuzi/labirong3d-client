@@ -26,11 +26,13 @@ export default class Player {
     private readonly scene: BABYLON.Scene,
     mesh: BABYLON.AbstractMesh,
     skeleton: BABYLON.Skeleton,
+    material: BABYLON.StandardMaterial,
     private readonly network: Network,
     public readonly id: number | undefined = undefined,
   ) {
     this.mesh = mesh as BABYLON.Mesh;
     this.mesh.scaling = new BABYLON.Vector3(0.015, 0.015, 0.015);
+    this.mesh.material = material;
 
     this.skeleton = skeleton;
     this.skeleton.animationPropertiesOverride = new BABYLON.AnimationPropertiesOverride();
