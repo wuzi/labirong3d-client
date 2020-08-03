@@ -14,13 +14,15 @@ export default class Player {
 
   private readonly walkingRange: BABYLON.Nullable<BABYLON.AnimationRange>;
 
+  private readonly runningRange: BABYLON.Nullable<BABYLON.AnimationRange>;
+
   private readonly backwardsRange: BABYLON.Nullable<BABYLON.AnimationRange>;
 
   private angle: number;
 
   private keyPressed: Input;
 
-  private currentAnimation: 'Idle' | 'Walking' | 'Backwards';
+  private currentAnimation: 'Idle' | 'Walking' | 'Backwards' | 'Running';
 
   constructor(
     private readonly scene: BABYLON.Scene,
@@ -42,6 +44,7 @@ export default class Player {
 
     this.idleRange = this.skeleton.getAnimationRange('Idle');
     this.walkingRange = this.skeleton.getAnimationRange('Walking');
+    this.runningRange = this.skeleton.getAnimationRange('Running');
     this.backwardsRange = this.skeleton.getAnimationRange('Backwards');
 
     this.playAnim('Idle');
@@ -84,7 +87,7 @@ export default class Player {
     this.scene.actionManager.registerAction(
       new BABYLON.ExecuteCodeAction(BABYLON.ActionManager.OnKeyDownTrigger, ((evt) => {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        (this.keyPressed as any)[evt.sourceEvent.key] = evt.sourceEvent.type === 'keydown';
+        (this.keyPressed as any)[evt.sourceEvent.key.toLowerCase()] = evt.sourceEvent.type === 'keydown';
         this.setSpeedByKeyPress();
       })),
     );
@@ -92,7 +95,7 @@ export default class Player {
     this.scene.actionManager.registerAction(
       new BABYLON.ExecuteCodeAction(BABYLON.ActionManager.OnKeyUpTrigger, ((evt) => {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        (this.keyPressed as any)[evt.sourceEvent.key] = evt.sourceEvent.type === 'keydown';
+        (this.keyPressed as any)[evt.sourceEvent.key.toLowerCase()] = evt.sourceEvent.type === 'keydown';
         this.setSpeedByKeyPress();
       })),
     );
@@ -108,7 +111,11 @@ export default class Player {
     this.speed.x = 0.0;
     this.speed.z = 0.0;
 
-    if (this.keyPressed.w) {
+    if (this.keyPressed.w && this.keyPressed.shift) {
+      this.playAnim('Running');
+      this.speed.x += -this.mesh.forward.x / 10;
+      this.speed.z += -this.mesh.forward.z / 10;
+    } else if (this.keyPressed.w) {
       this.playAnim('Walking');
       this.speed.x += -this.mesh.forward.x / 25;
       this.speed.z += -this.mesh.forward.z / 25;
@@ -127,7 +134,7 @@ export default class Player {
     }
   }
 
-  private playAnim(name: 'Idle' | 'Walking' | 'Backwards'): void {
+  private playAnim(name: 'Idle' | 'Walking' | 'Backwards' | 'Running'): void {
     if (name === this.currentAnimation) {
       return;
     }
@@ -148,6 +155,12 @@ export default class Player {
       if (this.backwardsRange) {
         this.scene.beginAnimation(
           this.skeleton, this.backwardsRange.from, this.backwardsRange.to, true,
+        );
+      }
+    } else if (name === 'Running') {
+      if (this.runningRange) {
+        this.scene.beginAnimation(
+          this.skeleton, this.runningRange.from, this.runningRange.to, true,
         );
       }
     }
