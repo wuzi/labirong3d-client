@@ -59,6 +59,8 @@ export default class GameplayScene {
         player.rotation.x = remotePlayer.rotation.x;
         player.rotation.y = remotePlayer.rotation.y;
         player.rotation.z = remotePlayer.rotation.z;
+
+        player.playAnim(remotePlayer.currentAnimation);
       });
     });
 

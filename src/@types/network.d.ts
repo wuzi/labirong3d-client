@@ -10,4 +10,5 @@ interface RemotePlayer {
     y: number;
     z: number;
   };
+  currentAnimation: 'Idle' | 'Walking' | 'Backwards' | 'Running';
 }

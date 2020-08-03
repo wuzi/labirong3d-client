@@ -22,7 +22,7 @@ export default class Player {
 
   private keyPressed: Input;
 
-  private currentAnimation: 'Idle' | 'Walking' | 'Backwards' | 'Running';
+  public currentAnimation: 'Idle' | 'Walking' | 'Backwards' | 'Running';
 
   constructor(
     private readonly scene: BABYLON.Scene,
@@ -125,6 +125,7 @@ export default class Player {
       this.speed.z += this.mesh.forward.z / 50;
     } else if (!this.keyPressed.w && !this.keyPressed.s) {
       this.playAnim('Idle');
+      this.sendPositionToGameServer();
     }
 
     if (this.keyPressed.a) {
@@ -134,7 +135,7 @@ export default class Player {
     }
   }
 
-  private playAnim(name: 'Idle' | 'Walking' | 'Backwards' | 'Running'): void {
+  public playAnim(name: 'Idle' | 'Walking' | 'Backwards' | 'Running'): void {
     if (name === this.currentAnimation) {
       return;
     }
@@ -182,6 +183,7 @@ export default class Player {
         y: this.rotation.y,
         z: this.rotation.z,
       },
+      currentAnimation: this.currentAnimation,
     };
 
     this.network.send('movePlayer', data);
