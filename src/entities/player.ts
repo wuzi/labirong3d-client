@@ -108,25 +108,21 @@ export default class Player {
     this.speed.x = 0.0;
     this.speed.z = 0.0;
 
-    if (this.keyPressed.w || this.keyPressed.ArrowUp) {
+    if (this.keyPressed.w) {
       this.playAnim('Walking');
       this.speed.x += -this.mesh.forward.x / 25;
       this.speed.z += -this.mesh.forward.z / 25;
-    } else if (this.keyPressed.s || this.keyPressed.ArrowDown) {
+    } else if (this.keyPressed.s) {
       this.playAnim('Backwards');
       this.speed.x += this.mesh.forward.x / 50;
       this.speed.z += this.mesh.forward.z / 50;
-    } else if (
-      !this.keyPressed.w
-      && !this.keyPressed.ArrowUp
-      && !this.keyPressed.s
-      && !this.keyPressed.ArrowDown) {
+    } else if (!this.keyPressed.w && !this.keyPressed.s) {
       this.playAnim('Idle');
     }
 
-    if (this.keyPressed.a || this.keyPressed.ArrowLeft) {
+    if (this.keyPressed.a) {
       this.angle = -this.velocity;
-    } else if (this.keyPressed.d || this.keyPressed.ArrowRight) {
+    } else if (this.keyPressed.d) {
       this.angle = this.velocity;
     }
   }
