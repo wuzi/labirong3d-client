@@ -90,7 +90,9 @@ export default class Chatbox {
           this.blur();
           break;
         case KeyCode.ENTER:
-          this.sendMessage(this.writeArea.value);
+          if (/\S/.test(this.writeArea.value)) {
+            this.sendMessage(this.writeArea.value);
+          }
           this.writeArea.value = '';
           this.blur();
           break;
