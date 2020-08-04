@@ -5,6 +5,7 @@ export default class Chatbox {
 
   constructor(private readonly scene: BABYLON.Scene) {
     this.element = document.createElement('div');
+    this.element.style.display = 'none';
     this.element.id = 'chatbox';
     document.body.appendChild(this.element);
 

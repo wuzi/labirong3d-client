@@ -1,31 +1,88 @@
 import * as BABYLON from '@babylonjs/core';
-import Network from '../network';
-import Player from '../entities/player';
-import Wall from '../entities/wall';
-import Skybox from '../entities/skybox';
+
+import Camera from '../entities/camera';
+import Chatbox from '../network/chatbox';
 import Ground from '../entities/ground';
+import Player from '../entities/player';
+import Skybox from '../entities/skybox';
+import Sunlight from '../entities/sunlight';
+import Torch from '../entities/torch';
+import Wall from '../entities/wall';
+import Network from '../network';
 
 export default class GameplayScene {
-  public readonly canvas: HTMLCanvasElement;
-
-  public readonly engine: BABYLON.Engine;
-
   public readonly scene: BABYLON.Scene;
 
   public readonly ground: Ground;
 
   public readonly skybox: Skybox;
 
+  public readonly camera: Camera;
+
   public readonly players: Player[] = [];
 
-  public grid: number[][] = [];
+  private grid: number[][] = [];
 
-  constructor(public readonly network: Network) {
-    this.canvas = document.getElementById('canvas') as HTMLCanvasElement;
-    this.engine = new BABYLON.Engine(this.canvas, true);
+  private player: Player | undefined;
+
+  private characterMeshTask: BABYLON.MeshAssetTask;
+
+  private characterTextureTask: BABYLON.TextureAssetTask;
+
+  private characterMaterial: BABYLON.StandardMaterial;
+
+  constructor(
+    private readonly engine: BABYLON.Engine,
+    private readonly canvas: HTMLCanvasElement,
+    public readonly network: Network,
+  ) {
+    this.engine.displayLoadingUI();
+
     this.scene = new BABYLON.Scene(this.engine);
     this.skybox = new Skybox(this.scene);
     this.ground = new Ground(this.scene);
+    this.camera = new Camera(this.scene, this.canvas);
+    this.characterMaterial = new BABYLON.StandardMaterial('characterMat', this.scene);
+
+    // Create chatbox
+    const chatbox = new Chatbox(this.scene);
+
+    // Lighting configuration
+    const torch = new Torch(this.scene);
+    torch.intensity = 1;
+
+    const sunlight = new Sunlight(this.scene);
+    sunlight.intensity = 0.5;
+
+    // Load assets
+    const assetsManager = new BABYLON.AssetsManager(this.scene);
+    this.characterMeshTask = assetsManager.addMeshTask('characterMesh', '', 'assets/', 'character.babylon');
+    this.characterTextureTask = assetsManager.addTextureTask('characterTexture', 'assets/textures/character.png');
+
+    assetsManager.onTasksDoneObservable.add((): void => {
+      this.characterMaterial.diffuseTexture = this.characterTextureTask.texture;
+
+      this.player = new Player(
+        this.scene,
+        this.characterMeshTask.loadedMeshes[0],
+        this.characterMeshTask.loadedSkeletons[0],
+        this.characterMaterial,
+        this.network,
+      );
+      this.player.position = this.getRandomSpawn();
+      this.player.readControls();
+      this.camera.lockTarget(this.player.mesh);
+
+      // Do stuff before render
+      this.scene.registerBeforeRender(() => {
+        if (this.player) {
+          this.player.move();
+          torch.copyPositionFrom(this.player.position);
+        }
+      });
+
+      chatbox.show();
+    });
 
     this.network.onConnect.add(() => {
       this.network.send('syncWorld');
@@ -37,6 +94,7 @@ export default class GameplayScene {
       });
       this.grid = data.grid;
       this.spawnWalls();
+      assetsManager.load();
     });
 
     this.network.onPlayerJoin.add((data) => {
@@ -89,11 +147,13 @@ export default class GameplayScene {
   private async addPlayer(remotePlayer: RemotePlayer): Promise<void> {
     const { meshes, skeletons } = await BABYLON.SceneLoader.ImportMeshAsync('', 'assets/', 'character.babylon', this.scene);
 
-    const material = new BABYLON.StandardMaterial('characterMat', this.scene);
-    material.diffuseTexture = new BABYLON.Texture('assets/textures/character.png', this.scene);
-
     const player = new Player(
-      this.scene, meshes[0], skeletons[0], material, this.network, remotePlayer.id,
+      this.scene,
+      meshes[0],
+      skeletons[0],
+      this.characterMaterial,
+      this.network,
+      remotePlayer.id,
     );
 
     player.position.x = remotePlayer.position.x;
