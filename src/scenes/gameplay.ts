@@ -45,7 +45,7 @@ export default class GameplayScene {
     this.characterMaterial = new BABYLON.StandardMaterial('characterMat', this.scene);
 
     // Create chatbox
-    const chatbox = new Chatbox(this.canvas);
+    const chatbox = new Chatbox(this.canvas, this.network);
 
     // Lighting configuration
     const torch = new Torch(this.scene);

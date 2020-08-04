@@ -1,3 +1,4 @@
+import Network from './index';
 import KeyCode from '../constants/keycode';
 
 export default class Chatbox {
@@ -9,6 +10,7 @@ export default class Chatbox {
 
   constructor(
     private readonly canvas: HTMLCanvasElement,
+    private readonly network: Network,
   ) {
     this.element = document.createElement('div');
     this.element.style.display = 'none';
@@ -22,6 +24,10 @@ export default class Chatbox {
     this.writeArea = document.createElement('input');
     this.writeArea.classList.add('chatbox__write');
     this.element.appendChild(this.writeArea);
+
+    this.network.onChatMessage.add((data): void => {
+      this.appendMessage(data.message, `Player #${data.player.id}`, '#fff');
+    });
 
     this.attachControl();
   }
@@ -62,6 +68,10 @@ export default class Chatbox {
     this.readArea.appendChild(containerEl);
   }
 
+  private sendMessage(message: string): void {
+    this.network.send('chatMessage', { message });
+  }
+
   private attachControl(): void {
     this.canvas.onkeydown = (e: KeyboardEvent): void => {
       switch (e.keyCode) {
@@ -76,7 +86,11 @@ export default class Chatbox {
     this.writeArea.onkeydown = (e: KeyboardEvent): void => {
       switch (e.keyCode) {
         case KeyCode.ESCAPE:
+          this.blur();
+          break;
         case KeyCode.ENTER:
+          this.sendMessage(this.writeArea.value);
+          this.writeArea.value = '';
           this.blur();
           break;
         default:

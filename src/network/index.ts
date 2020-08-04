@@ -10,6 +10,8 @@ export default class Network {
 
   public readonly onConnect: BABYLON.Observable<void>;
 
+  public readonly onChatMessage: BABYLON.Observable<{ player: RemotePlayer; message: string }>;
+
   public readonly onSyncWorld: BABYLON.Observable<{ players: RemotePlayer[]; grid: number[][] }>;
 
   public readonly onPlayerJoin: BABYLON.Observable<{ player: RemotePlayer }>;
@@ -29,6 +31,7 @@ export default class Network {
     this.onConnect = new BABYLON.Observable();
     this.onSyncWorld = new BABYLON.Observable();
     this.onPlayerJoin = new BABYLON.Observable();
+    this.onChatMessage = new BABYLON.Observable();
     this.onPlayerQuit = new BABYLON.Observable();
     this.connection = new WebSocket(this.url);
 
@@ -53,6 +56,8 @@ export default class Network {
             this.onPlayerQuit.notifyObservers(event.data);
           } else if (event.name === 'update') {
             this.onUpdate.notifyObservers(event.data);
+          } else if (event.name === 'chatMessage') {
+            this.onChatMessage.notifyObservers(event.data);
           }
         } catch (err) {
           console.error(err);
