@@ -8,6 +8,8 @@ export default class Chatbox {
 
   private writeArea: HTMLInputElement;
 
+  private static readonly MAX_INPUT_LENGTH = 144;
+
   constructor(
     private readonly canvas: HTMLCanvasElement,
     private readonly network: Network,
@@ -23,6 +25,7 @@ export default class Chatbox {
 
     this.writeArea = document.createElement('input');
     this.writeArea.classList.add('chatbox__write');
+    this.writeArea.maxLength = Chatbox.MAX_INPUT_LENGTH;
     this.element.appendChild(this.writeArea);
 
     this.network.onChatMessage.add((data): void => {
