@@ -4,6 +4,10 @@ import KeyCode from '../constants/keycode';
 export default class Chatbox {
   private element: HTMLDivElement;
 
+  private readArea: HTMLDivElement;
+
+  private writeArea: HTMLInputElement;
+
   constructor(
     private readonly scene: BABYLON.Scene,
     private readonly canvas: HTMLCanvasElement,
@@ -13,17 +17,16 @@ export default class Chatbox {
     this.element.id = 'chatbox';
     document.body.appendChild(this.element);
 
-    this.scene.onKeyboardObservable.add((e) => {
-      switch (e.event.keyCode) {
-        case KeyCode.ENTER:
-          this.focus();
-          break;
-        default:
-          break;
-      }
-    });
+    this.readArea = document.createElement('div');
+    this.readArea.classList.add('chatbox__read');
+    this.element.appendChild(this.readArea);
 
-    this.configChatElements();
+    this.writeArea = document.createElement('input');
+    this.writeArea.classList.add('chatbox__write');
+    this.writeArea.id = 'chatboxwrite';
+    this.element.appendChild(this.writeArea);
+
+    this.attachControl();
   }
 
   public show(): void {
@@ -45,51 +48,46 @@ export default class Chatbox {
     }
   }
 
-  private configChatElements(): void {
-    const readArea = document.createElement('div');
-    readArea.classList.add('chatbox__read');
-    this.element.appendChild(readArea);
+  public appendMessage(message: string, author: string, color = '#ff0000'): void {
+    const messageElement = document.createElement('div');
+    const messageAuthor = document.createElement('span');
+    const spanElement = document.createElement('span');
 
-    const fakeMessages = [
-      { owner: 'Wuzi', message: 'Hi!', color: '#ff0000' },
-      { owner: 'Igon', message: 'Hi there :)', color: '#8c00ff' },
-    ];
+    messageAuthor.textContent = `${author}:`;
+    spanElement.textContent = message;
 
-    fakeMessages.map((fakeMessage) => {
-      const messageElement = document.createElement('div');
-      const messageOwner = document.createElement('span');
-      const message = document.createElement('span');
+    messageElement.classList.add('chatbox__read__container');
+    messageAuthor.classList.add('chatbox__read__author');
+    spanElement.classList.add('chatbox__read__message');
 
-      messageOwner.textContent = `${fakeMessage.owner}:`;
-      message.textContent = fakeMessage.message;
+    messageAuthor.style.color = color;
 
-      messageElement.classList.add('chatbox__read__container');
-      messageOwner.classList.add('chatbox__read__owner');
-      message.classList.add('chatbox__read__message');
+    messageElement.appendChild(messageAuthor);
+    messageElement.appendChild(spanElement);
 
-      messageOwner.style.color = fakeMessage.color;
+    this.readArea.appendChild(messageElement);
+  }
 
-      messageElement.appendChild(messageOwner);
-      messageElement.appendChild(message);
-
-      readArea.appendChild(messageElement);
-
-      return messageElement;
-    });
-
-    const writeArea = document.createElement('input');
-    writeArea.classList.add('chatbox__write');
-    writeArea.id = 'chatboxwrite';
-    writeArea.onkeydown = (e: KeyboardEvent): void => {
+  private attachControl(): void {
+    this.canvas.onkeydown = (e: KeyboardEvent): void => {
       switch (e.keyCode) {
-        case KeyCode.ESCAPE:
-          this.blur();
+        case KeyCode.ENTER:
+          this.focus();
           break;
         default:
           break;
       }
     };
 
-    this.element.appendChild(writeArea);
+    this.writeArea.onkeydown = (e: KeyboardEvent): void => {
+      switch (e.keyCode) {
+        case KeyCode.ESCAPE:
+        case KeyCode.ENTER:
+          this.blur();
+          break;
+        default:
+          break;
+      }
+    };
   }
 }
