@@ -1,4 +1,3 @@
-import * as BABYLON from '@babylonjs/core';
 import KeyCode from '../constants/keycode';
 
 export default class Chatbox {
@@ -9,7 +8,6 @@ export default class Chatbox {
   private writeArea: HTMLInputElement;
 
   constructor(
-    private readonly scene: BABYLON.Scene,
     private readonly canvas: HTMLCanvasElement,
   ) {
     this.element = document.createElement('div');
