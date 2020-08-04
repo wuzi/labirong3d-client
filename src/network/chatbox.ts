@@ -66,6 +66,7 @@ export default class Chatbox {
     containerEl.appendChild(backgroundEl);
 
     this.readArea.appendChild(containerEl);
+    this.readArea.scrollTop = this.readArea.scrollHeight;
   }
 
   private sendMessage(message: string): void {
