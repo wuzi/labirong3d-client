@@ -30,6 +30,10 @@ export default class Chatbox {
     this.element.style.display = 'flex';
   }
 
+  public hide(): void {
+    this.element.style.display = 'none';
+  }
+
   public blur(): void {
     this.writeArea.blur();
     this.canvas.focus();
