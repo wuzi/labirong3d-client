@@ -35,6 +35,8 @@ export default class GameplayScene {
     private readonly canvas: HTMLCanvasElement,
     public readonly network: Network,
   ) {
+    this.engine.displayLoadingUI();
+
     this.scene = new BABYLON.Scene(this.engine);
     this.skybox = new Skybox(this.scene);
     this.ground = new Ground(this.scene);
