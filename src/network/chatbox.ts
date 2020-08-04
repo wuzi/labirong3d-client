@@ -44,23 +44,22 @@ export default class Chatbox {
   }
 
   public appendMessage(message: string, author: string, color = '#ff0000'): void {
-    const messageElement = document.createElement('div');
-    const messageAuthor = document.createElement('span');
-    const spanElement = document.createElement('span');
+    const authorEl = document.createElement('span');
+    const containerEl = document.createElement('div');
+    const backgroundEl = document.createElement('span');
 
-    messageAuthor.textContent = `${author}:`;
-    spanElement.textContent = message;
+    authorEl.style.color = color;
+    authorEl.textContent = `${author}:`;
+    backgroundEl.textContent = message;
 
-    messageElement.classList.add('chatbox__read__container');
-    messageAuthor.classList.add('chatbox__read__author');
-    spanElement.classList.add('chatbox__read__message');
+    authorEl.classList.add('chatbox__read__author');
+    containerEl.classList.add('chatbox__read__container');
+    backgroundEl.classList.add('chatbox__read__message');
 
-    messageAuthor.style.color = color;
+    containerEl.appendChild(authorEl);
+    containerEl.appendChild(backgroundEl);
 
-    messageElement.appendChild(messageAuthor);
-    messageElement.appendChild(spanElement);
-
-    this.readArea.appendChild(messageElement);
+    this.readArea.appendChild(containerEl);
   }
 
   private attachControl(): void {
