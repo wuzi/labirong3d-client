@@ -1,14 +1,19 @@
-import { setChatStyle } from './styles';
+import * as BABYLON from '@babylonjs/core';
 
 export default class Chatbox {
   private element: HTMLDivElement;
 
-  constructor() {
+  constructor(private readonly scene: BABYLON.Scene) {
     this.element = document.createElement('div');
     this.element.id = 'chatbox';
     document.body.appendChild(this.element);
 
-    setChatStyle();
+    this.scene.onKeyboardObservable.add((e) => {
+      if (e.event.keyCode === 13) {
+        this.focus();
+      }
+    });
+
     this.configChatElements();
   }
 

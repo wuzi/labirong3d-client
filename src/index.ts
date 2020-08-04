@@ -39,13 +39,8 @@ const Main = async (): Promise<void> => {
   camera.lockTarget(player.mesh);
 
   // Create chatbox
-  const chatbox = new Chatbox();
+  const chatbox = new Chatbox(gameplay.scene);
   chatbox.show();
-  gameplay.scene.onKeyboardObservable.add((e) => {
-    if (e.event.keyCode === 13) {
-      chatbox.focus();
-    }
-  });
 
   // Do stuff before render
   gameplay.scene.registerBeforeRender(() => {
