@@ -41,20 +41,23 @@ export default class Network {
     };
 
     this.connection.onmessage = (e: MessageEvent): void => {
-      try {
-        const event = JSON.parse(e.data);
-        if (event.name === 'syncWorld') {
-          this.onSyncWorld.notifyObservers(event.data);
-        } else if (event.name === 'playerJoin') {
-          this.onPlayerJoin.notifyObservers(event.data);
-        } else if (event.name === 'playerQuit') {
-          this.onPlayerQuit.notifyObservers(event.data);
-        } else if (event.name === 'update') {
-          this.onUpdate.notifyObservers(event.data);
+      const events: string[] = e.data.split(/\r?\n/);
+      events.forEach((data): void => {
+        try {
+          const event = JSON.parse(data);
+          if (event.name === 'syncWorld') {
+            this.onSyncWorld.notifyObservers(event.data);
+          } else if (event.name === 'playerJoin') {
+            this.onPlayerJoin.notifyObservers(event.data);
+          } else if (event.name === 'playerQuit') {
+            this.onPlayerQuit.notifyObservers(event.data);
+          } else if (event.name === 'update') {
+            this.onUpdate.notifyObservers(event.data);
+          }
+        } catch (err) {
+          console.error(err);
         }
-      } catch (err) {
-        console.error(err);
-      }
+      });
     };
   }
 
