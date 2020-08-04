@@ -1,6 +1,7 @@
 import * as BABYLON from '@babylonjs/core';
 
 import Camera from '../entities/camera';
+import Chatbox from '../network/chatbox';
 import Ground from '../entities/ground';
 import Player from '../entities/player';
 import Skybox from '../entities/skybox';
@@ -43,6 +44,9 @@ export default class GameplayScene {
     this.camera = new Camera(this.scene, this.canvas);
     this.characterMaterial = new BABYLON.StandardMaterial('characterMat', this.scene);
 
+    // Create chatbox
+    const chatbox = new Chatbox(this.canvas, this.network);
+
     // Lighting configuration
     const torch = new Torch(this.scene);
     torch.intensity = 1;
@@ -76,6 +80,8 @@ export default class GameplayScene {
           torch.copyPositionFrom(this.player.position);
         }
       });
+
+      chatbox.show();
     });
 
     this.network.onConnect.add(() => {
