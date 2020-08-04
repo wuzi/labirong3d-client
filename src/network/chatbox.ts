@@ -1,17 +1,29 @@
 import * as BABYLON from '@babylonjs/core';
 
+enum KEYCODE {
+  ENTER = 13,
+  ESCAPE = 27,
+}
+
 export default class Chatbox {
   private element: HTMLDivElement;
 
-  constructor(private readonly scene: BABYLON.Scene) {
+  constructor(
+    private readonly scene: BABYLON.Scene,
+    private readonly canvas: HTMLCanvasElement,
+  ) {
     this.element = document.createElement('div');
     this.element.style.display = 'none';
     this.element.id = 'chatbox';
     document.body.appendChild(this.element);
 
     this.scene.onKeyboardObservable.add((e) => {
-      if (e.event.keyCode === 13) {
-        this.focus();
+      switch (e.event.keyCode) {
+        case KEYCODE.ENTER:
+          this.focus();
+          break;
+        default:
+          break;
       }
     });
 
@@ -24,12 +36,17 @@ export default class Chatbox {
 
   public blur(): void {
     const input = document.getElementById('chatboxwrite');
-    if (input) { input.blur(); }
+    if (input) {
+      input.blur();
+      this.canvas.focus();
+    }
   }
 
   public focus(): void {
     const input = document.getElementById('chatboxwrite');
-    if (input) { input.focus(); }
+    if (input) {
+      input.focus();
+    }
   }
 
   private configChatElements(): void {
@@ -67,6 +84,15 @@ export default class Chatbox {
     const writeArea = document.createElement('input');
     writeArea.classList.add('chatbox__write');
     writeArea.id = 'chatboxwrite';
+    writeArea.onkeydown = (e: KeyboardEvent): void => {
+      switch (e.keyCode) {
+        case KEYCODE.ESCAPE:
+          this.blur();
+          break;
+        default:
+          break;
+      }
+    };
 
     this.element.appendChild(writeArea);
   }
