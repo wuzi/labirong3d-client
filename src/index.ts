@@ -41,6 +41,11 @@ const Main = async (): Promise<void> => {
   // Create chatbox
   const chatbox = new Chatbox();
   chatbox.show();
+  gameplay.scene.onKeyboardObservable.add((e) => {
+    if (e.event.keyCode === 13) {
+      chatbox.focus();
+    }
+  });
 
   // Do stuff before render
   gameplay.scene.registerBeforeRender(() => {

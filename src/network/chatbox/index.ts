@@ -1,0 +1,67 @@
+import { setChatStyle } from './styles';
+
+export default class Chatbox {
+  private element: HTMLDivElement;
+
+  constructor() {
+    this.element = document.createElement('div');
+    this.element.id = 'chatbox';
+    document.body.appendChild(this.element);
+
+    setChatStyle();
+    this.configChatElements();
+  }
+
+  public show(): void {
+    this.element.style.display = 'flex';
+  }
+
+  public blur(): void {
+    const input = document.getElementById('chatboxwrite');
+    if (input) { input.blur(); }
+  }
+
+  public focus(): void {
+    const input = document.getElementById('chatboxwrite');
+    if (input) { input.focus(); }
+  }
+
+  private configChatElements(): void {
+    const readArea = document.createElement('div');
+    readArea.classList.add('chatbox__read');
+    this.element.appendChild(readArea);
+
+    const fakeMessages = [
+      { owner: 'Wuzi', message: 'Hi!', color: '#ff0000' },
+      { owner: 'Igon', message: 'Hy there :)', color: '#8c00ff' },
+    ];
+
+    fakeMessages.map((fakeMessage) => {
+      const messageElement = document.createElement('div');
+      const messageOwner = document.createElement('span');
+      const message = document.createElement('span');
+
+      messageOwner.textContent = `${fakeMessage.owner}:`;
+      message.textContent = fakeMessage.message;
+
+      messageElement.classList.add('chatbox__read__container');
+      messageOwner.classList.add('chatbox__read__owner');
+      message.classList.add('chatbox__read__message');
+
+      messageOwner.style.color = fakeMessage.color;
+
+      messageElement.appendChild(messageOwner);
+      messageElement.appendChild(message);
+
+      readArea.appendChild(messageElement);
+
+      return messageElement;
+    });
+
+    const writeArea = document.createElement('input');
+    writeArea.classList.add('chatbox__write');
+    writeArea.id = 'chatboxwrite';
+
+    this.element.appendChild(writeArea);
+  }
+}
