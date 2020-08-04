@@ -21,7 +21,6 @@ export default class Chatbox {
 
     this.writeArea = document.createElement('input');
     this.writeArea.classList.add('chatbox__write');
-    this.writeArea.id = 'chatboxwrite';
     this.element.appendChild(this.writeArea);
 
     this.attachControl();
@@ -32,18 +31,12 @@ export default class Chatbox {
   }
 
   public blur(): void {
-    const input = document.getElementById('chatboxwrite');
-    if (input) {
-      input.blur();
-      this.canvas.focus();
-    }
+    this.writeArea.blur();
+    this.canvas.focus();
   }
 
   public focus(): void {
-    const input = document.getElementById('chatboxwrite');
-    if (input) {
-      input.focus();
-    }
+    this.writeArea.focus();
   }
 
   public appendMessage(message: string, author: string, color = '#ff0000'): void {
