@@ -33,7 +33,7 @@ export default class Chatbox {
 
     const fakeMessages = [
       { owner: 'Wuzi', message: 'Hi!', color: '#ff0000' },
-      { owner: 'Igon', message: 'Hy there :)', color: '#8c00ff' },
+      { owner: 'Igon', message: 'Hi there :)', color: '#8c00ff' },
     ];
 
     fakeMessages.map((fakeMessage) => {
