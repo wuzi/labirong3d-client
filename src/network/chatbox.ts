@@ -1,9 +1,5 @@
 import * as BABYLON from '@babylonjs/core';
-
-enum KEYCODE {
-  ENTER = 13,
-  ESCAPE = 27,
-}
+import KeyCode from '../constants/keycode';
 
 export default class Chatbox {
   private element: HTMLDivElement;
@@ -19,7 +15,7 @@ export default class Chatbox {
 
     this.scene.onKeyboardObservable.add((e) => {
       switch (e.event.keyCode) {
-        case KEYCODE.ENTER:
+        case KeyCode.ENTER:
           this.focus();
           break;
         default:
@@ -86,7 +82,7 @@ export default class Chatbox {
     writeArea.id = 'chatboxwrite';
     writeArea.onkeydown = (e: KeyboardEvent): void => {
       switch (e.keyCode) {
-        case KEYCODE.ESCAPE:
+        case KeyCode.ESCAPE:
           this.blur();
           break;
         default:
