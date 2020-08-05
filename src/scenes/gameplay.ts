@@ -82,6 +82,8 @@ export default class GameplayScene {
       });
 
       chatbox.show();
+      chatbox.appendMessage('Welcome to Labirong!');
+      chatbox.appendMessage('Try to find the exit.');
     });
 
     this.network.onConnect.add(() => {

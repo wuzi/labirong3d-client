@@ -60,7 +60,7 @@ export default class Chatbox {
     this.writeArea.focus();
   }
 
-  public appendMessage(message: string, author: string, color = '#ff0000'): void {
+  public appendMessage(message: string, author = 'System', color = '#ff0000'): void {
     const authorEl = document.createElement('span');
     const containerEl = document.createElement('div');
     const backgroundEl = document.createElement('span');
