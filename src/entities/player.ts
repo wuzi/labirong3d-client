@@ -142,6 +142,18 @@ export default class Player {
     }
   }
 
+  private setAnimByKeyPress(): void {
+    if (this.keyPressed.KeyW && this.keyPressed.ShiftLeft) {
+      this.playAnim('Running');
+    } else if (this.keyPressed.KeyW) {
+      this.playAnim('Walking');
+    } else if (this.keyPressed.KeyS) {
+      this.playAnim('Backwards');
+    } else {
+      this.playAnim('Idle');
+    }
+  }
+
   public playAnim(name: 'Idle' | 'Walking' | 'Backwards' | 'Running' | 'Jump'): void {
     if (name === this.currentAnimation || this.isJumping) {
       return;
@@ -177,6 +189,7 @@ export default class Player {
         this.scene.beginAnimation(
           this.skeleton, this.jumpRange.from, this.jumpRange.to, false, 1.0, () => {
             this.isJumping = false;
+            this.setAnimByKeyPress();
           },
         );
       }
