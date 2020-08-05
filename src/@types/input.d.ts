@@ -1,7 +1,8 @@
 interface Input {
-  w?: boolean;
-  a?: boolean;
-  s?: boolean;
-  d?: boolean;
-  shift?: boolean;
+  KeyW?: boolean;
+  KeyA?: boolean;
+  KeyS?: boolean;
+  KeyD?: boolean;
+  ShiftLeft?: boolean;
+  Space?: boolean;
 }

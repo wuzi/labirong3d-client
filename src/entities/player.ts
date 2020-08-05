@@ -86,16 +86,14 @@ export default class Player {
 
     this.scene.actionManager.registerAction(
       new BABYLON.ExecuteCodeAction(BABYLON.ActionManager.OnKeyDownTrigger, ((evt) => {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        (this.keyPressed as any)[evt.sourceEvent.key.toLowerCase()] = evt.sourceEvent.type === 'keydown';
+        this.keyPressed[evt.sourceEvent.code as keyof Input] = evt.sourceEvent.type === 'keydown';
         this.setSpeedByKeyPress();
       })),
     );
 
     this.scene.actionManager.registerAction(
       new BABYLON.ExecuteCodeAction(BABYLON.ActionManager.OnKeyUpTrigger, ((evt) => {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        (this.keyPressed as any)[evt.sourceEvent.key.toLowerCase()] = evt.sourceEvent.type === 'keydown';
+        this.keyPressed[evt.sourceEvent.code as keyof Input] = evt.sourceEvent.type === 'keydown';
         this.setSpeedByKeyPress();
       })),
     );
@@ -111,26 +109,26 @@ export default class Player {
     this.speed.x = 0.0;
     this.speed.z = 0.0;
 
-    if (this.keyPressed.w && this.keyPressed.shift) {
+    if (this.keyPressed.KeyW && this.keyPressed.ShiftLeft) {
       this.playAnim('Running');
       this.speed.x += -this.mesh.forward.x / 10;
       this.speed.z += -this.mesh.forward.z / 10;
-    } else if (this.keyPressed.w) {
+    } else if (this.keyPressed.KeyW) {
       this.playAnim('Walking');
       this.speed.x += -this.mesh.forward.x / 25;
       this.speed.z += -this.mesh.forward.z / 25;
-    } else if (this.keyPressed.s) {
+    } else if (this.keyPressed.KeyS) {
       this.playAnim('Backwards');
       this.speed.x += this.mesh.forward.x / 50;
       this.speed.z += this.mesh.forward.z / 50;
-    } else if (!this.keyPressed.w && !this.keyPressed.s) {
+    } else if (!this.keyPressed.KeyW && !this.keyPressed.KeyS) {
       this.playAnim('Idle');
       this.sendPositionToGameServer();
     }
 
-    if (this.keyPressed.a) {
+    if (this.keyPressed.KeyA) {
       this.angle = -this.velocity;
-    } else if (this.keyPressed.d) {
+    } else if (this.keyPressed.KeyD) {
       this.angle = this.velocity;
     }
   }
