@@ -12,6 +12,8 @@ export default class Player {
 
   private readonly idleRange: BABYLON.Nullable<BABYLON.AnimationRange>;
 
+  private readonly jumpRange: BABYLON.Nullable<BABYLON.AnimationRange>;
+
   private readonly walkingRange: BABYLON.Nullable<BABYLON.AnimationRange>;
 
   private readonly runningRange: BABYLON.Nullable<BABYLON.AnimationRange>;
@@ -20,9 +22,11 @@ export default class Player {
 
   private angle: number;
 
+  private isJumping = false;
+
   private keyPressed: Input;
 
-  public currentAnimation: 'Idle' | 'Walking' | 'Backwards' | 'Running';
+  public currentAnimation: 'Idle' | 'Walking' | 'Backwards' | 'Running' | 'Jump';
 
   constructor(
     private readonly scene: BABYLON.Scene,
@@ -43,6 +47,7 @@ export default class Player {
     this.skeleton.animationPropertiesOverride.loopMode = 1;
 
     this.idleRange = this.skeleton.getAnimationRange('Idle');
+    this.jumpRange = this.skeleton.getAnimationRange('Jump');
     this.walkingRange = this.skeleton.getAnimationRange('Walking');
     this.runningRange = this.skeleton.getAnimationRange('Running');
     this.backwardsRange = this.skeleton.getAnimationRange('Backwards');
@@ -109,6 +114,10 @@ export default class Player {
     this.speed.x = 0.0;
     this.speed.z = 0.0;
 
+    if (this.keyPressed.Space) {
+      this.playAnim('Jump');
+    }
+
     if (this.keyPressed.KeyW && this.keyPressed.ShiftLeft) {
       this.playAnim('Running');
       this.speed.x += -this.mesh.forward.x / 10;
@@ -133,8 +142,8 @@ export default class Player {
     }
   }
 
-  public playAnim(name: 'Idle' | 'Walking' | 'Backwards' | 'Running'): void {
-    if (name === this.currentAnimation) {
+  public playAnim(name: 'Idle' | 'Walking' | 'Backwards' | 'Running' | 'Jump'): void {
+    if (name === this.currentAnimation || this.isJumping) {
       return;
     }
 
@@ -160,6 +169,15 @@ export default class Player {
       if (this.runningRange) {
         this.scene.beginAnimation(
           this.skeleton, this.runningRange.from, this.runningRange.to, true,
+        );
+      }
+    } else if (name === 'Jump') {
+      if (this.jumpRange) {
+        this.isJumping = true;
+        this.scene.beginAnimation(
+          this.skeleton, this.jumpRange.from, this.jumpRange.to, false, 1.0, () => {
+            this.isJumping = false;
+          },
         );
       }
     }
