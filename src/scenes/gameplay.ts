@@ -140,7 +140,7 @@ export default class GameplayScene {
     }
 
     if (spawns.length > 0) {
-      position.x = (spawns[Math.floor(Math.random() * this.grid.length)] * 8) - 64;
+      position.x = (spawns[Math.floor(Math.random() * spawns.length)] * 8) - 64;
     }
 
     return position;
