@@ -32,6 +32,7 @@ body, html {
   display: flex;
   flex-direction: column;
   user-select: none;
+  transition: opacity 3s ease-in-out;
 }
 
 .chatbox__read {
