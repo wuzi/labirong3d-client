@@ -8,7 +8,7 @@ export default class Chatbox {
 
   private writeArea: HTMLInputElement;
 
-  private static readonly MAX_INPUT_LENGTH = 144;
+  public static readonly MAX_INPUT_LENGTH = 144;
 
   constructor(
     private readonly canvas: HTMLCanvasElement,
