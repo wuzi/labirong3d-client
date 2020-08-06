@@ -195,6 +195,7 @@ export default class GameplayScene {
 
     const box = BABYLON.MeshBuilder.CreateTiledBox('', options, this.scene);
     box.material = material;
+    box.position.y = -10;
 
     this.grid.forEach((tiles, x) => {
       tiles.forEach((tile, z) => {
