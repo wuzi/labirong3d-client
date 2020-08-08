@@ -1,5 +1,7 @@
 interface RemotePlayer {
   id: number;
+  name: string;
+  color: string;
   position: {
     x: number;
     y: number;

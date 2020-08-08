@@ -33,7 +33,7 @@ export default class Chatbox {
     this.element.appendChild(this.writeArea);
 
     this.network.onChatMessage.add((data): void => {
-      this.appendMessage(data.message, `Player #${data.player.id}`, '#fff');
+      this.appendMessage(data.message, data.player.name, data.player.color);
     });
 
     this.attachControl();
@@ -60,7 +60,7 @@ export default class Chatbox {
     this.writeArea.focus();
   }
 
-  public appendMessage(message: string, author = 'System', color = '#ff0000'): void {
+  public appendMessage(message: string, author = 'System', color = 'crimson'): void {
     const authorEl = document.createElement('span');
     const containerEl = document.createElement('div');
     const backgroundEl = document.createElement('span');

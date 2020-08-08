@@ -35,6 +35,7 @@ export default class GameplayScene {
     private readonly engine: BABYLON.Engine,
     private readonly canvas: HTMLCanvasElement,
     public readonly network: Network,
+    playerOptions: { name: string; color: string },
   ) {
     this.engine.displayLoadingUI();
 
@@ -67,6 +68,7 @@ export default class GameplayScene {
         this.characterMeshTask.loadedMeshes[0],
         this.characterMeshTask.loadedSkeletons[0],
         this.characterMaterial,
+        playerOptions,
         this.network,
       );
       this.player.position = this.getRandomSpawn();
@@ -154,6 +156,7 @@ export default class GameplayScene {
       meshes[0],
       skeletons[0],
       this.characterMaterial,
+      { name: remotePlayer.name, color: remotePlayer.color },
       this.network,
       remotePlayer.id,
     );
