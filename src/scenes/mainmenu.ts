@@ -64,6 +64,11 @@ export default class MainMenuScene {
         return;
       }
 
+      if (nameInput.value.length > 12) {
+        errorMessage.innerText = 'Name too long!';
+        return;
+      }
+
       this.onPlayerSubmit.notifyObservers({ name: nameInput.value, color: colorSelect.value });
     });
 
