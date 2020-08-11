@@ -2,6 +2,8 @@ import * as BABYLON from '@babylonjs/core';
 import Network from '../network';
 
 export default class Player {
+  public readonly id?: number;
+
   public readonly name: string;
 
   public readonly color: string;
@@ -37,10 +39,10 @@ export default class Player {
     mesh: BABYLON.AbstractMesh,
     skeleton: BABYLON.Skeleton,
     material: BABYLON.StandardMaterial,
-    options: { name: string; color: string },
+    options: { id?: number; name: string; color: string },
     private readonly network: Network,
-    public readonly id: number | undefined = undefined,
   ) {
+    this.id = options.id;
     this.name = options.name;
     this.color = options.color;
 
