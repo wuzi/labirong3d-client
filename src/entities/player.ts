@@ -39,12 +39,12 @@ export default class Player {
     mesh: BABYLON.AbstractMesh,
     skeleton: BABYLON.Skeleton,
     material: BABYLON.StandardMaterial,
-    options: { id?: number; name: string; color: string },
+    playerData: { id?: number; name: string; color: string },
     private readonly network: Network,
   ) {
-    this.id = options.id;
-    this.name = options.name;
-    this.color = options.color;
+    this.id = playerData.id;
+    this.name = playerData.name;
+    this.color = playerData.color;
 
     this.mesh = mesh as BABYLON.Mesh;
     this.mesh.scaling = new BABYLON.Vector3(0.015, 0.015, 0.015);
