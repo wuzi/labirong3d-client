@@ -1,16 +1,14 @@
-import {
-  Color3, PointLight, Scene, Vector3,
-} from '@babylonjs/core';
+import * as BABYLON from '@babylonjs/core';
 
 export default class Torch {
-  private readonly light: PointLight;
+  private readonly light: BABYLON.PointLight;
 
-  constructor(scene: Scene) {
-    this.light = new PointLight('light1', Vector3.Zero(), scene);
-    this.light.diffuse = Color3.FromHexString('#ff9944');
+  constructor(scene: BABYLON.Scene) {
+    this.light = new BABYLON.PointLight('light1', BABYLON.Vector3.Zero(), scene);
+    this.light.diffuse = BABYLON.Color3.FromHexString('#ff9944');
   }
 
-  public copyPositionFrom(position: Vector3): void {
+  public copyPositionFrom(position: BABYLON.Vector3): void {
     this.light.position = position;
   }
 

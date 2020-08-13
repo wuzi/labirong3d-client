@@ -1,10 +1,10 @@
-import { HemisphericLight, Scene, Vector3 } from '@babylonjs/core';
+import * as BABYLON from '@babylonjs/core';
 
 export default class Sunlight {
-  private readonly light: HemisphericLight;
+  private readonly light: BABYLON.HemisphericLight;
 
-  constructor(scene: Scene) {
-    this.light = new HemisphericLight('sky', new Vector3(0, 1.0, 0), scene);
+  constructor(scene: BABYLON.Scene) {
+    this.light = new BABYLON.HemisphericLight('sky', new BABYLON.Vector3(0, 1.0, 0), scene);
   }
 
   get intensity(): number {
