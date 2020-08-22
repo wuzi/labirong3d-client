@@ -1,4 +1,4 @@
-interface RemotePlayer {
+export interface RemotePlayerDTO {
   id: number;
   name: string;
   color: string;

@@ -1,22 +1,23 @@
 /* eslint-disable no-console */
 import * as BABYLON from '@babylonjs/core';
+import { RemotePlayerDTO } from './dto/remote-player.dto';
 
 export default class Network {
   private readonly connection: WebSocket;
 
   public readonly onError: BABYLON.Observable<Event>;
 
-  public readonly onUpdate: BABYLON.Observable<{ players: RemotePlayer[] }>;
+  public readonly onUpdate: BABYLON.Observable<{ players: RemotePlayerDTO[] }>;
 
   public readonly onConnect: BABYLON.Observable<void>;
 
-  public readonly onChatMessage: BABYLON.Observable<{ player: RemotePlayer; message: string }>;
+  public readonly onChatMessage: BABYLON.Observable<{ player: RemotePlayerDTO; message: string }>;
 
-  public readonly onSyncWorld: BABYLON.Observable<{ players: RemotePlayer[]; grid: number[][] }>;
+  public readonly onSyncWorld: BABYLON.Observable<{ players: RemotePlayerDTO[]; grid: number[][] }>;
 
-  public readonly onPlayerJoin: BABYLON.Observable<{ player: RemotePlayer }>;
+  public readonly onPlayerJoin: BABYLON.Observable<{ player: RemotePlayerDTO }>;
 
-  public readonly onPlayerQuit: BABYLON.Observable<{ player: RemotePlayer }>;
+  public readonly onPlayerQuit: BABYLON.Observable<{ player: RemotePlayerDTO }>;
 
   public static readonly STATE = {
     CONNECTING: 0,

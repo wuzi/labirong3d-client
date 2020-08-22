@@ -1,6 +1,15 @@
 import * as BABYLON from '@babylonjs/core';
 import Network from '../network';
 
+interface KeyPressed {
+  KeyW?: boolean;
+  KeyA?: boolean;
+  KeyS?: boolean;
+  KeyD?: boolean;
+  ShiftLeft?: boolean;
+  Space?: boolean;
+}
+
 export default class Player {
   public readonly id?: number;
 
@@ -30,7 +39,7 @@ export default class Player {
 
   private isJumping = false;
 
-  private keyPressed: Input;
+  private keyPressed: KeyPressed;
 
   public currentAnimation: 'Idle' | 'Walking' | 'Backwards' | 'Running' | 'Jump';
 
@@ -101,14 +110,14 @@ export default class Player {
 
     this.scene.actionManager.registerAction(
       new BABYLON.ExecuteCodeAction(BABYLON.ActionManager.OnKeyDownTrigger, ((evt) => {
-        this.keyPressed[evt.sourceEvent.code as keyof Input] = evt.sourceEvent.type === 'keydown';
+        this.keyPressed[evt.sourceEvent.code as keyof KeyPressed] = evt.sourceEvent.type === 'keydown';
         this.setSpeedByKeyPress();
       })),
     );
 
     this.scene.actionManager.registerAction(
       new BABYLON.ExecuteCodeAction(BABYLON.ActionManager.OnKeyUpTrigger, ((evt) => {
-        this.keyPressed[evt.sourceEvent.code as keyof Input] = evt.sourceEvent.type === 'keydown';
+        this.keyPressed[evt.sourceEvent.code as keyof KeyPressed] = evt.sourceEvent.type === 'keydown';
         this.setSpeedByKeyPress();
       })),
     );

@@ -9,6 +9,7 @@ import Sunlight from '../entities/sunlight';
 import Torch from '../entities/torch';
 import Wall from '../entities/wall';
 import Network from '../network';
+import { RemotePlayerDTO } from '../network/dto/remote-player.dto';
 
 export default class GameplayScene {
   public readonly scene: BABYLON.Scene;
@@ -93,7 +94,7 @@ export default class GameplayScene {
     });
 
     this.network.onSyncWorld.add((data) => {
-      data.players.forEach((remotePlayer: RemotePlayer) => {
+      data.players.forEach((remotePlayer: RemotePlayerDTO) => {
         this.addPlayer(remotePlayer);
       });
       this.grid = data.grid;
@@ -110,7 +111,7 @@ export default class GameplayScene {
     });
 
     this.network.onUpdate.add((data) => {
-      data.players.forEach((remotePlayer: RemotePlayer) => {
+      data.players.forEach((remotePlayer: RemotePlayerDTO) => {
         const player = this.players.find((pl) => pl.id === remotePlayer.id);
         if (!player) return;
 
@@ -148,7 +149,7 @@ export default class GameplayScene {
     return position;
   }
 
-  private async addPlayer(remotePlayer: RemotePlayer): Promise<void> {
+  private async addPlayer(remotePlayer: RemotePlayerDTO): Promise<void> {
     const { meshes, skeletons } = await BABYLON.SceneLoader.ImportMeshAsync('', 'assets/', 'character.babylon', this.scene);
 
     const playerData = {
