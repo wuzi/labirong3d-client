@@ -1,7 +1,9 @@
+import Color from '../../constants/color';
+
 export interface RemotePlayerDTO {
   id: number;
   name: string;
-  color: string;
+  color: Color;
   position: {
     x: number;
     y: number;

@@ -9,6 +9,7 @@ import Sunlight from '../entities/sunlight';
 import Torch from '../entities/torch';
 import Wall from '../entities/wall';
 import Network from '../network';
+import Color from '../constants/color';
 import { RemotePlayerDTO } from '../network/dto/remote-player.dto';
 
 export default class GameplayScene {
@@ -28,15 +29,15 @@ export default class GameplayScene {
 
   private characterMeshTask: BABYLON.MeshAssetTask;
 
-  private characterTextureTask: BABYLON.TextureAssetTask;
+  private textureTasks: BABYLON.TextureAssetTask[];
 
-  private characterMaterial: BABYLON.StandardMaterial;
+  private materials: BABYLON.StandardMaterial[];
 
   constructor(
     private readonly engine: BABYLON.Engine,
     private readonly canvas: HTMLCanvasElement,
     public readonly network: Network,
-    playerOptions: { name: string; color: string },
+    playerOptions: { name: string; color: Color },
   ) {
     this.engine.displayLoadingUI();
 
@@ -44,7 +45,8 @@ export default class GameplayScene {
     this.skybox = new Skybox(this.scene);
     this.ground = new Ground(this.scene);
     this.camera = new Camera(this.scene, this.canvas);
-    this.characterMaterial = new BABYLON.StandardMaterial('characterMat', this.scene);
+
+    this.materials = Object.values(Color).map((color) => new BABYLON.StandardMaterial(`character-${color}`, this.scene));
 
     // Create chatbox
     const chatbox = new Chatbox(this.canvas, this.network);
@@ -59,16 +61,27 @@ export default class GameplayScene {
     // Load assets
     const assetsManager = new BABYLON.AssetsManager(this.scene);
     this.characterMeshTask = assetsManager.addMeshTask('characterMesh', '', 'assets/', 'character.babylon');
-    this.characterTextureTask = assetsManager.addTextureTask('characterTexture', 'assets/textures/character.png');
+
+    const textures = [
+      { name: 'character-red', filename: 'character-red.jpeg' },
+      { name: 'character-blue', filename: 'character-blue.jpeg' },
+      { name: 'character-green', filename: 'character-green.jpeg' },
+      { name: 'character-yellow', filename: 'character-yellow.jpeg' },
+    ];
+    this.textureTasks = textures.map((texture) => assetsManager.addTextureTask(texture.name, `assets/textures/${texture.filename}`));
 
     assetsManager.onTasksDoneObservable.add((): void => {
-      this.characterMaterial.diffuseTexture = this.characterTextureTask.texture;
+      for (let i = 0; i < this.materials.length; i++) {
+        this.materials[i].diffuseTexture = this.textureTasks[i].texture;
+      }
+
+      const colorIdx = Object.values(Color).findIndex((color) => color === playerOptions.color);
 
       this.player = new Player(
         this.scene,
         this.characterMeshTask.loadedMeshes[0],
         this.characterMeshTask.loadedSkeletons[0],
-        this.characterMaterial,
+        this.materials[colorIdx],
         playerOptions,
         this.network,
       );
@@ -152,18 +165,20 @@ export default class GameplayScene {
   private async addPlayer(remotePlayer: RemotePlayerDTO): Promise<void> {
     const { meshes, skeletons } = await BABYLON.SceneLoader.ImportMeshAsync('', 'assets/', 'character.babylon', this.scene);
 
-    const playerData = {
+    const playerOptions = {
       id: remotePlayer.id,
       name: remotePlayer.name,
       color: remotePlayer.color,
     };
 
+    const colorIdx = Object.values(Color).findIndex((color) => color === playerOptions.color);
+
     const player = new Player(
       this.scene,
       meshes[0],
       skeletons[0],
-      this.characterMaterial,
-      playerData,
+      this.materials[colorIdx],
+      playerOptions,
       this.network,
     );
 

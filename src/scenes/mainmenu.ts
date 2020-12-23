@@ -1,9 +1,10 @@
 import * as BABYLON from '@babylonjs/core';
+import Color from '../constants/color';
 
 export default class MainMenuScene {
   private element: HTMLDivElement;
 
-  public readonly onPlayerSubmit: BABYLON.Observable<{ name: string; color: string }>;
+  public readonly onPlayerSubmit: BABYLON.Observable<{ name: string; color: Color }>;
 
   constructor() {
     this.onPlayerSubmit = new BABYLON.Observable();
@@ -29,25 +30,13 @@ export default class MainMenuScene {
     const colorSelect = document.createElement('select');
     body.appendChild(colorSelect);
 
-    const redOption = document.createElement('option');
-    redOption.innerText = 'Red';
-    redOption.value = 'red';
-    colorSelect.options.add(redOption);
-
-    const blueOption = document.createElement('option');
-    blueOption.innerText = 'Blue';
-    blueOption.value = 'blue';
-    colorSelect.options.add(blueOption);
-
-    const greenOption = document.createElement('option');
-    greenOption.innerText = 'Green';
-    greenOption.value = 'green';
-    colorSelect.options.add(greenOption);
-
-    const yellowOption = document.createElement('option');
-    yellowOption.innerText = 'Yellow';
-    yellowOption.value = 'yellow';
-    colorSelect.options.add(yellowOption);
+    const colors = Object.values(Color);
+    colors.forEach((color) => {
+      const option = document.createElement('option');
+      option.innerText = color;
+      option.value = color;
+      colorSelect.options.add(option);
+    });
 
     const playButton = document.createElement('button');
     playButton.type = 'button';
@@ -69,7 +58,10 @@ export default class MainMenuScene {
         return;
       }
 
-      this.onPlayerSubmit.notifyObservers({ name: nameInput.value, color: colorSelect.value });
+      this.onPlayerSubmit.notifyObservers({
+        name: nameInput.value,
+        color: colorSelect.value as Color,
+      });
     });
 
     document.body.appendChild(this.element);

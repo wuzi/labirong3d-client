@@ -1,4 +1,5 @@
 import * as BABYLON from '@babylonjs/core';
+import Color from '../constants/color';
 import Network from '../network';
 
 interface KeyPressed {
@@ -15,7 +16,7 @@ export default class Player {
 
   public readonly name: string;
 
-  public readonly color: string;
+  public readonly color: Color;
 
   public readonly mesh: BABYLON.Mesh;
 
@@ -48,12 +49,12 @@ export default class Player {
     mesh: BABYLON.AbstractMesh,
     skeleton: BABYLON.Skeleton,
     material: BABYLON.StandardMaterial,
-    playerData: { id?: number; name: string; color: string },
+    playerOptions: { id?: number; name: string; color: Color },
     private readonly network: Network,
   ) {
-    this.id = playerData.id;
-    this.name = playerData.name;
-    this.color = playerData.color;
+    this.id = playerOptions.id;
+    this.name = playerOptions.name;
+    this.color = playerOptions.color;
 
     this.mesh = mesh as BABYLON.Mesh;
     this.mesh.scaling = new BABYLON.Vector3(0.015, 0.015, 0.015);
