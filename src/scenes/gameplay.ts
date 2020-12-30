@@ -112,6 +112,7 @@ export default class GameplayScene {
       });
       this.grid = data.grid;
       this.spawnWalls();
+      this.spawnGate();
       assetsManager.load();
     });
 
@@ -226,6 +227,35 @@ export default class GameplayScene {
         if (tile === 1) {
           const wall = new Wall(box);
           wall.position = new BABYLON.Vector3((x * 8) - 64, 0, (z * 8) - 64);
+        }
+      });
+    });
+  }
+
+  private spawnGate(): void {
+    const material = new BABYLON.StandardMaterial('', this.scene);
+    material.diffuseTexture = new BABYLON.Texture('assets/textures/gate.jpg', this.scene);
+
+    const options = {
+      sideOrientation: BABYLON.Mesh.DOUBLESIDE,
+      pattern: BABYLON.Mesh.FLIP_TILE,
+      alignVertical: BABYLON.Mesh.TOP,
+      alignHorizontal: BABYLON.Mesh.LEFT,
+      width: 8,
+      height: 16,
+      depth: 8,
+      tileSize: 8,
+      tileWidth: 16,
+    };
+
+    const box = BABYLON.MeshBuilder.CreateTiledBox('gate', options, this.scene);
+    box.material = material;
+
+    this.grid.forEach((tiles, x) => {
+      tiles.forEach((tile, z) => {
+        if (z === this.grid.length - 1 && tile === 0) {
+          box.position = new BABYLON.Vector3((x * 8) - 64, 0, (z * 8) - 64);
+          box.checkCollisions = true;
         }
       });
     });
