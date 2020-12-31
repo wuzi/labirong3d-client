@@ -27,6 +27,10 @@ export default class GameplayScene {
 
   private player: Player | undefined;
 
+  private gate: BABYLON.Mesh | undefined;
+
+  private walls: Wall[] = [];
+
   private characterMeshTask: BABYLON.MeshAssetTask;
 
   private textureTasks: BABYLON.TextureAssetTask[];
@@ -94,6 +98,10 @@ export default class GameplayScene {
         if (this.player) {
           this.player.move();
           torch.copyPositionFrom(this.player.position);
+
+          if (this.gate?.intersectsMesh(this.player.mesh, true)) {
+            this.network.send('onPlayerEscape');
+          }
         }
       });
 
@@ -122,6 +130,25 @@ export default class GameplayScene {
 
     this.network.onPlayerQuit.add((data) => {
       this.removePlayer(data.player.id);
+    });
+
+    this.network.onPlayerEscape.add((data) => {
+      chatbox.appendMessage(`${data.player.name} has escaped the labyrinth!`);
+      chatbox.appendMessage('Generating new map...');
+    });
+
+    this.network.onMapRegen.add((data) => {
+      this.engine.displayLoadingUI();
+      this.grid = data.grid;
+
+      this.spawnWalls();
+      this.spawnGate();
+
+      if (this.player) {
+        this.player.position = this.getRandomSpawn();
+      }
+
+      this.engine.hideLoadingUI();
     });
 
     this.network.onUpdate.add((data) => {
@@ -203,6 +230,11 @@ export default class GameplayScene {
   }
 
   private spawnWalls(): void {
+    if (this.walls.length > 0) {
+      this.walls.map((wall) => wall.dispose());
+      this.walls = [];
+    }
+
     const material = new BABYLON.StandardMaterial('', this.scene);
     material.diffuseTexture = new BABYLON.Texture('assets/textures/brick.png', this.scene);
 
@@ -227,12 +259,17 @@ export default class GameplayScene {
         if (tile === 1) {
           const wall = new Wall(box);
           wall.position = new BABYLON.Vector3((x * 8) - 64, 0, (z * 8) - 64);
+          this.walls.push(wall);
         }
       });
     });
   }
 
   private spawnGate(): void {
+    if (this.gate) {
+      this.gate.dispose();
+    }
+
     const material = new BABYLON.StandardMaterial('', this.scene);
     material.diffuseTexture = new BABYLON.Texture('assets/textures/gate.jpg', this.scene);
 
@@ -248,14 +285,14 @@ export default class GameplayScene {
       tileWidth: 16,
     };
 
-    const box = BABYLON.MeshBuilder.CreateTiledBox('gate', options, this.scene);
-    box.material = material;
+    this.gate = BABYLON.MeshBuilder.CreateTiledBox('gate', options, this.scene);
+    this.gate.material = material;
 
     this.grid.forEach((tiles, x) => {
       tiles.forEach((tile, z) => {
-        if (z === this.grid.length - 1 && tile === 0) {
-          box.position = new BABYLON.Vector3((x * 8) - 64, 0, (z * 8) - 64);
-          box.checkCollisions = true;
+        if (z === this.grid.length - 1 && tile === 0 && this.gate) {
+          this.gate.position = new BABYLON.Vector3((x * 8) - 64, 0, (z * 8) - 64);
+          this.gate.checkCollisions = true;
         }
       });
     });

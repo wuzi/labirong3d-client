@@ -15,9 +15,13 @@ export default class Network {
 
   public readonly onSyncWorld: BABYLON.Observable<{ players: RemotePlayerDTO[]; grid: number[][] }>;
 
+  public readonly onMapRegen: BABYLON.Observable<{ grid: number[][] }>;
+
   public readonly onPlayerJoin: BABYLON.Observable<{ player: RemotePlayerDTO }>;
 
   public readonly onPlayerQuit: BABYLON.Observable<{ player: RemotePlayerDTO }>;
+
+  public readonly onPlayerEscape: BABYLON.Observable<{ player: RemotePlayerDTO }>;
 
   public static readonly STATE = {
     CONNECTING: 0,
@@ -31,9 +35,11 @@ export default class Network {
     this.onUpdate = new BABYLON.Observable();
     this.onConnect = new BABYLON.Observable();
     this.onSyncWorld = new BABYLON.Observable();
+    this.onMapRegen = new BABYLON.Observable();
     this.onPlayerJoin = new BABYLON.Observable();
     this.onChatMessage = new BABYLON.Observable();
     this.onPlayerQuit = new BABYLON.Observable();
+    this.onPlayerEscape = new BABYLON.Observable();
     this.connection = new WebSocket(this.url);
 
     this.connection.onopen = (): void => {
@@ -51,6 +57,8 @@ export default class Network {
           const event = JSON.parse(data);
           if (event.name === 'syncWorld') {
             this.onSyncWorld.notifyObservers(event.data);
+          } else if (event.name === 'onMapRegen') {
+            this.onMapRegen.notifyObservers(event.data);
           } else if (event.name === 'playerJoin') {
             this.onPlayerJoin.notifyObservers(event.data);
           } else if (event.name === 'playerQuit') {
@@ -59,6 +67,8 @@ export default class Network {
             this.onUpdate.notifyObservers(event.data);
           } else if (event.name === 'chatMessage') {
             this.onChatMessage.notifyObservers(event.data);
+          } else if (event.name === 'onPlayerEscape') {
+            this.onPlayerEscape.notifyObservers(event.data);
           }
         } catch (err) {
           console.error(err);

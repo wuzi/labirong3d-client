@@ -15,4 +15,8 @@ export default class Wall {
   set position(position: BABYLON.Vector3) {
     this.mesh.position = position;
   }
+
+  public dispose(): void {
+    return this.mesh.dispose();
+  }
 }
