@@ -21,3 +21,8 @@ List of all the available scripts:
 
 ## Server
 Check out the server-side code [here](https://github.com/Wuzi/labirong3d-server).
+
+## Credits
+* Character - Timmy from [mixamo](https://www.mixamo.com)
+* Background Music - [calm-ambient-3-lifewave-2k](https://opengameart.org/content/calm-ambient-3-lifewave-2k) by [cynicmusic](https://opengameart.org/users/cynicmusic)
+* Gate - [Gothic Home Decor](https://www.pinterest.com/pin/575334921118806820/) from [pinterest](https://www.pinterest.com)
