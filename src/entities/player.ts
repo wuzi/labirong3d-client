@@ -65,7 +65,7 @@ export default class Player {
     this.stepSound = new BABYLON.Sound('Footstep', 'assets/sounds/stepstone.wav', scene, null, {
       loop: true,
       playbackRate: 0.75,
-      volume: 0.5,
+      volume: 0.25,
     });
     this.stepSound.attachToMesh(this.mesh);
 
