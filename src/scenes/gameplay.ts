@@ -25,6 +25,8 @@ export default class GameplayScene {
 
   public readonly music: BABYLON.Sound;
 
+  private readonly completionSound: BABYLON.Sound;
+
   private hasEscaped: boolean;
 
   private grid: number[][] = [];
@@ -55,6 +57,7 @@ export default class GameplayScene {
     this.ground = new Ground(this.scene);
     this.camera = new Camera(this.scene, this.canvas);
 
+    this.completionSound = new BABYLON.Sound('Completion', 'assets/sounds/level-completion.ogg', this.scene, null);
     this.music = new BABYLON.Sound('Ambient Sound', 'assets/sounds/ambient.ogg', this.scene, null, {
       loop: true,
       autoplay: true,
@@ -148,6 +151,7 @@ export default class GameplayScene {
     this.network.onPlayerEscape.add((data) => {
       chatbox.appendMessage(`${data.player.name} has escaped the labyrinth!`);
       chatbox.appendMessage('Generating new map...');
+      this.completionSound.play();
     });
 
     this.network.onMapRegen.add((data) => {
