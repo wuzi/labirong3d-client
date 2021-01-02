@@ -23,6 +23,8 @@ export default class GameplayScene {
 
   public readonly players: Player[] = [];
 
+  private hasEscaped: boolean;
+
   private grid: number[][] = [];
 
   private player: Player | undefined;
@@ -45,6 +47,7 @@ export default class GameplayScene {
   ) {
     this.engine.displayLoadingUI();
 
+    this.hasEscaped = false;
     this.scene = new BABYLON.Scene(this.engine);
     this.skybox = new Skybox(this.scene);
     this.ground = new Ground(this.scene);
@@ -99,8 +102,11 @@ export default class GameplayScene {
           this.player.move();
           torch.copyPositionFrom(this.player.position);
 
-          if (this.gate?.intersectsMesh(this.player.mesh, true)) {
-            this.network.send('onPlayerEscape');
+          if (!this.hasEscaped) {
+            if (this.gate?.intersectsMesh(this.player.mesh, true)) {
+              this.hasEscaped = true;
+              this.network.send('onPlayerEscape');
+            }
           }
         }
       });
@@ -140,6 +146,7 @@ export default class GameplayScene {
     this.network.onMapRegen.add((data) => {
       this.engine.displayLoadingUI();
       this.grid = data.grid;
+      this.hasEscaped = false;
 
       this.spawnWalls();
       this.spawnGate();
