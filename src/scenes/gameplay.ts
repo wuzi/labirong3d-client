@@ -23,6 +23,8 @@ export default class GameplayScene {
 
   public readonly players: Player[] = [];
 
+  public readonly music: BABYLON.Sound;
+
   private hasEscaped: boolean;
 
   private grid: number[][] = [];
@@ -52,6 +54,11 @@ export default class GameplayScene {
     this.skybox = new Skybox(this.scene);
     this.ground = new Ground(this.scene);
     this.camera = new Camera(this.scene, this.canvas);
+
+    this.music = new BABYLON.Sound('Ambient Sound', 'assets/sounds/ambient.ogg', this.scene, null, {
+      loop: true,
+      autoplay: true,
+    });
 
     this.materials = Object.values(Color).map((color) => new BABYLON.StandardMaterial(`character-${color}`, this.scene));
 
