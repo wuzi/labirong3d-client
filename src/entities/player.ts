@@ -36,6 +36,8 @@ export default class Player {
 
   private readonly backwardsRange: BABYLON.Nullable<BABYLON.AnimationRange>;
 
+  private readonly stepSound: BABYLON.Sound;
+
   private angle: number;
 
   private isJumping = false;
@@ -59,6 +61,13 @@ export default class Player {
     this.mesh = mesh as BABYLON.Mesh;
     this.mesh.scaling = new BABYLON.Vector3(0.015, 0.015, 0.015);
     this.mesh.material = material;
+
+    this.stepSound = new BABYLON.Sound('Footstep', 'assets/sounds/stepstone.wav', scene, null, {
+      loop: true,
+      playbackRate: 0.75,
+      volume: 0.5,
+    });
+    this.stepSound.attachToMesh(this.mesh);
 
     this.skeleton = skeleton;
     this.skeleton.animationPropertiesOverride = new BABYLON.AnimationPropertiesOverride();
@@ -216,6 +225,41 @@ export default class Player {
     }
 
     this.currentAnimation = name;
+
+    if (this.currentAnimation !== 'Idle') {
+      this.playStepSound();
+    } else {
+      this.stopStepSound();
+    }
+  }
+
+  private playStepSound(): void {
+    switch (this.currentAnimation) {
+      case 'Walking':
+        this.stepSound.setPlaybackRate(0.75);
+        break;
+      case 'Backwards':
+        this.stepSound.setPlaybackRate(0.50);
+        break;
+      case 'Running':
+        this.stepSound.setPlaybackRate(1);
+        break;
+      case 'Jump':
+        this.stepSound.setPlaybackRate(0.21);
+        break;
+      default:
+        break;
+    }
+
+    if (!this.stepSound.isPlaying) {
+      this.stepSound.play();
+    }
+  }
+
+  private stopStepSound(): void {
+    if (this.stepSound.isPlaying) {
+      this.stepSound.stop();
+    }
   }
 
   private sendPositionToGameServer(): void {
