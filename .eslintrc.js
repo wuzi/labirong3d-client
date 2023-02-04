@@ -36,7 +36,7 @@ module.exports = {
         "tsx": "never"
       }
     ],
-    "func-names": "off"
+    "func-names": "off",
   },
   "settings": {
     "import/resolver": {
