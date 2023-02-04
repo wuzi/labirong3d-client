@@ -4,7 +4,7 @@
   "description": "A remake of the labirong game in 3D",
   "main": "index.js",
   "scripts": {
-    "start": "webpack-dev-server --config webpack.config.prod.js",
+    "start": "node server.js",
     "dev": "webpack-dev-server --config webpack.config.dev.js",
     "build": "webpack --config webpack.config.prod.js",
     "lint": "eslint --ext .ts src/"
